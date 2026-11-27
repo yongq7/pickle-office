@@ -5,7 +5,7 @@
    - Firebase/CDN 등 다른 출처 요청은 절대 가로채지 않는다
      (실시간 SSE·인증 통신 방해 금지)
    ========================================================= */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = 'pickle-office-' + VERSION;
 
 /* 설치 직후 오프라인에서도 잠금 화면·아이콘이 뜨도록 미리 담아 둔다 */
@@ -48,7 +48,18 @@ self.addEventListener('activate', (event) => {
 async function networkFirst(request, fallbackKey) {
   const cache = await caches.open(CACHE);
   try {
-    const fresh = await fetch(request);
+    /* no-cache: 브라우저 HTTP 캐시(깃허브 페이지스 10분)에 기대지 않고
+       매번 서버에 물어 최신 배포본을 받는다. 바뀐 게 없으면 304로 가볍다. */
+    let fresh;
+    try {
+      fresh = await fetch(request.url, {
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        redirect: 'follow'
+      });
+    } catch (e) {
+      fresh = await fetch(request);
+    }
     if (fresh && fresh.ok) cache.put(request, fresh.clone()).catch(() => {});
     return fresh;
   } catch (err) {

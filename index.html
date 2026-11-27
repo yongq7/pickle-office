@@ -1693,7 +1693,7 @@ setTimeout(()=>{
   /* --- 서비스워커: 설치 요건(오프라인 캐시) 충족 --- */
   if('serviceWorker' in navigator){
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('./sw.js', { scope: './' })
+      navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' })
         .then(function(reg){ console.log('[PWA] 서비스워커 등록됨:', reg.scope); })
         .catch(function(err){ console.warn('[PWA] 서비스워커 등록 실패:', err); });
     });
