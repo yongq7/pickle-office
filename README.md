@@ -28,6 +28,7 @@ Firebase Realtime Database에서 실시간으로 동기화됩니다. 승인된 �
 | 📋 작업실 | 작업 등록(담당자·우선순위)과 상태 변경(대기 → 실행중 → 완료), 삭제. |
 | 📊 비서현황 | 비서 4인의 온라인/대기 상태, 현재 작업, 메모를 보고 바로 고칩니다. |
 | 📝 메모 | 공유 메모 추가·완료 체크·삭제. |
+| 🎁 당첨함 | 당첨된 경품·체험단을 한곳에 모아 사용/완료 여부를 실시간으로 체크. 상단에 전체·미사용·사용완료 건수와 필터, 카드마다 상태 배지(눌러서 토글)·유효기간(만료 임박 강조)·쿠폰번호 복사·삭제, `＋ 당첨 추가` 폼. 미사용이 위, 같은 그룹은 최신 당첨일 순. 탭 라벨의 주황 배지는 미사용 건수. |
 
 ## 멤버
 
@@ -82,7 +83,13 @@ agents/{manneungi|yeolmae|claude|gpt}   { name, role, status, task, memo }
 messages/{general|command|lounge}/{id}  { sender, name, emoji, role, text, ts }   // sender는 로그인 계정 키(yonggyu|manneungi|yeolmae|claude|gpt), 예전 값 '열매'는 'yeolmae'로 호환
 tasks/{id}                              { title, owner, priority, status, ts }
 memos/{id}                              { text, done, ts }
+prizes/{id}                             { title, source, wonAt(YYYY-MM-DD), due(문자열), coupon, used, usedAt(ms), ts }
 ```
+
+- `prizes`는 미사용(`used: false`)이 먼저, 같은 그룹에서는 `wonAt` 최신순으로 정렬됩니다.
+  상태 배지·체크를 누르면 `used`/`usedAt`이 `PATCH`로 바로 저장됩니다.
+- `due`에 `YYYY-MM-DD` 형식 날짜가 들어 있으면 남은 날짜(D-n)를 계산해 **7일 이내는 빨갛게**,
+  기한이 지난 항목은 `기한 지남`으로 표시합니다. 날짜가 아닌 글(`문자/쿠폰 확인` 등)은 그대로 보여 줍니다.
 
 ## 파일
 

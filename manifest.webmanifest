@@ -1,7 +1,7 @@
 {
   "name": "뭐든다함 비서실",
   "short_name": "뭐든다함",
-  "description": "대장님 전용 뭐든다함 비서실 — 오피스 맵, 회의실, 작업실, 비서현황, 메모",
+  "description": "대장님 전용 뭐든다함 비서실 — 오피스 맵, 회의실, 작업실, 비서현황, 메모, 당첨함",
   "lang": "ko",
   "dir": "ltr",
   "start_url": "/pickle-office/",

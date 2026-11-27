@@ -5,7 +5,7 @@
    - Firebase/CDN 등 다른 출처 요청은 절대 가로채지 않는다
      (실시간 SSE·인증 통신 방해 금지)
    ========================================================= */
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = 'pickle-office-' + VERSION;
 
 /* 설치 직후 오프라인에서도 잠금 화면·아이콘이 뜨도록 미리 담아 둔다 */

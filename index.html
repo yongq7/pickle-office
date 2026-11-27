@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>뭐든다함 비서실</title>
-<meta name="description" content="대장님 전용 뭐든다함 비서실 — 오피스 맵, 회의실, 작업실, 비서현황, 메모">
+<meta name="description" content="대장님 전용 뭐든다함 비서실 — 오피스 맵, 회의실, 작업실, 비서현황, 메모, 당첨함">
 <meta name="theme-color" content="#f7f1e6">
 <meta name="color-scheme" content="light">
 <link rel="manifest" href="manifest.webmanifest">
@@ -118,6 +118,14 @@
     color:#FFF9EE;
     box-shadow:0 5px 14px rgba(139,69,19,.30), inset 0 1px 0 rgba(255,255,255,.16);
   }
+  .tab-badge{
+    min-width:17px;height:17px;padding:0 5px;border-radius:999px;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:#DC6A1E;color:#FFF9EE;font-size:10px;font-weight:800;
+    letter-spacing:0;line-height:1;font-variant-numeric:tabular-nums;
+  }
+  .tab-badge[hidden]{display:none}
+  .tab.active .tab-badge{background:#FFDFB4;color:#7B3E13}
 
   /* ================= panels ================= */
   main{flex:1;min-height:0;display:flex;flex-direction:column}
@@ -388,14 +396,15 @@
     border:1px solid var(--line);border-radius:999px;padding:3px 9px;
   }
   label.f-label{display:block;font-size:11.5px;font-weight:800;color:#A2917C;margin:0 0 6px 2px;letter-spacing:.2px}
-  input[type=text], textarea.txt, select{
+  input[type=text], input[type=date], textarea.txt, select{
     width:100%;font-family:inherit;font-size:13px;color:#4A3A2A;
     padding:11px 13px;border-radius:13px;
     border:1px solid var(--line);background:#FFFDF9;outline:none;
     letter-spacing:-.2px;transition:border-color .16s, box-shadow .16s;
   }
   input[type=text]::placeholder, textarea.txt::placeholder{color:#BBAE9A}
-  input[type=text]:focus, textarea.txt:focus{border-color:#D9BE9B;box-shadow:0 0 0 3px rgba(217,190,155,.26)}
+  input[type=text]:focus, input[type=date]:focus, textarea.txt:focus{border-color:#D9BE9B;box-shadow:0 0 0 3px rgba(217,190,155,.26)}
+  input[type=date]{-webkit-appearance:none;appearance:none;min-height:40px}
   .field + .field{margin-top:11px}
   .btn{
     cursor:pointer;font-family:inherit;border:0;border-radius:13px;
@@ -499,6 +508,90 @@
   .memo-text{flex:1;font-size:13px;line-height:1.5;color:#4A3A2A;letter-spacing:-.2px;word-break:keep-all}
   .memo.done .memo-text{text-decoration:line-through;color:#A99B87}
   .memo-time{font-size:10.3px;color:#B6A996;margin-top:5px;font-weight:600}
+
+  /* ---------- prizes (당첨함) ---------- */
+  .prize-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .ps-item{
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:16px;
+    padding:10px 6px;text-align:center;box-shadow:var(--shadow-sm);
+  }
+  .ps-num{
+    font-size:20px;font-weight:800;line-height:1.1;letter-spacing:-.6px;
+    color:#4A2E1A;font-variant-numeric:tabular-nums;
+  }
+  .ps-item.pending .ps-num{color:#C1611F}
+  .ps-item.done .ps-num{color:#2F7A50}
+  .ps-label{margin-top:4px;font-size:10.5px;font-weight:800;color:#A2917C;letter-spacing:-.1px}
+
+  .prize-filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0 0}
+  .prize-filters .addbtn{margin-left:auto;background:#FFF1DE;border-color:#E4C79B;color:#8A5218}
+  .prize-form{margin-top:10px}
+  .prize-form[hidden]{display:none}
+
+  .prize{
+    position:relative;overflow:hidden;
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:18px;
+    padding:12px 13px 10px 15px;box-shadow:var(--shadow-sm);
+  }
+  .prize::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+    background:linear-gradient(180deg,#F2BE86,#DD8A3B);
+  }
+  .prize + .prize{margin-top:9px}
+  .prize.used{background:#FCFBF7}
+  .prize.used::before{background:#CFE7DA}
+  .prize-top{display:flex;align-items:flex-start;gap:9px}
+  .prize-check{
+    flex:none;width:24px;height:24px;margin-top:1px;border-radius:8px;cursor:pointer;
+    font-family:inherit;border:1.6px solid #DCCBB1;background:#FFFDF9;
+    display:grid;place-items:center;font-size:13px;color:transparent;transition:all .15s;
+  }
+  .prize-check.on{background:#3E9C6C;border-color:#3E9C6C;color:#fff}
+  .prize-check:active{transform:scale(.94)}
+  .prize-main{flex:1;min-width:0}
+  .prize-title{
+    font-size:13.4px;font-weight:800;color:#4A2E1A;line-height:1.45;
+    letter-spacing:-.25px;word-break:keep-all;
+  }
+  .prize.used .prize-title{color:#8C7C68;text-decoration:line-through;text-decoration-color:#C9BBA7}
+  .prize-src{margin-top:5px;font-size:11.4px;font-weight:700;color:#9A8C79;letter-spacing:-.15px;word-break:keep-all}
+  .prize-badge{
+    flex:none;cursor:pointer;font-family:inherit;white-space:nowrap;
+    padding:5px 9px;border-radius:999px;font-size:10.6px;font-weight:800;letter-spacing:-.1px;
+    background:#FFF4E4;border:1px solid #F0CFA6;color:#B4661F;transition:all .15s;
+  }
+  .prize-badge.used{background:#EDF7F1;border-color:#CFEBD9;color:#227A50}
+  .prize-badge:active{transform:scale(.95)}
+  .prize-meta{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 0}
+  .prize-due{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 9px;border-radius:999px;letter-spacing:-.1px;
+    background:#FAF4E8;border:1px solid #EFE1C9;
+    font-size:11.3px;font-weight:700;color:#7C6A55;
+  }
+  .prize-due.soon{background:#FDEEE7;border-color:#F6CFC0;color:#B4502B}
+  .prize-due.over{background:#FBE5DE;border-color:#F3C3B4;color:#A33B1B;font-weight:800}
+  .prize-coupon{
+    display:flex;align-items:center;gap:8px;margin-top:9px;padding:8px 10px;
+    border-radius:12px;background:#FBF7EF;border:1px dashed #E4D6BF;min-width:0;
+  }
+  .prize-coupon code{
+    flex:1;min-width:0;overflow-wrap:anywhere;word-break:break-all;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:11.8px;font-weight:700;color:#5A4632;letter-spacing:.2px;
+  }
+  .prize-copy{
+    flex:none;cursor:pointer;font-family:inherit;
+    padding:5px 10px;border-radius:9px;border:1px solid #E4D6BF;background:#FFFDF9;
+    color:#8A6A42;font-size:11.2px;font-weight:800;transition:all .14s;
+  }
+  .prize-copy:active{transform:scale(.95);background:#FBF1DE}
+  .prize-foot{display:flex;justify-content:flex-end;margin-top:8px}
+  .prize-del{
+    cursor:pointer;font-family:inherit;border:0;background:none;padding:4px 6px;
+    font-size:11px;font-weight:700;color:#B6A996;letter-spacing:-.1px;
+  }
+  .prize-del:active{color:#B4502B}
   .empty{
     text-align:center;font-size:12.3px;color:#A99B87;line-height:1.7;
     padding:26px 14px;border:1px dashed #E4D6BF;border-radius:16px;background:#FDFAF3;
@@ -688,6 +781,7 @@
     <button class="tab" data-tab="task">📋 작업실</button>
     <button class="tab" data-tab="agent">📊 비서현황</button>
     <button class="tab" data-tab="memo">📝 메모</button>
+    <button class="tab" data-tab="prize">🎁 당첨함 <span class="tab-badge" id="prizeTabBadge" hidden>0</span></button>
   </nav>
 
   <main>
@@ -803,6 +897,51 @@
       </div>
       <div style="height:12px"></div>
       <div id="memoList"><div class="empty">아직 메모가 없어요.</div></div>
+    </section>
+
+    <!-- ============ 당첨함 ============ -->
+    <section class="panel" id="panel-prize">
+      <div class="sec-title">🎁 당첨함 <span class="count" id="prizeCount">0건</span></div>
+
+      <div class="prize-sum">
+        <div class="ps-item"><div class="ps-num" id="psTotal">0</div><div class="ps-label">전체</div></div>
+        <div class="ps-item pending"><div class="ps-num" id="psPending">0</div><div class="ps-label">미사용</div></div>
+        <div class="ps-item done"><div class="ps-num" id="psDone">0</div><div class="ps-label">사용완료</div></div>
+      </div>
+
+      <div class="prize-filters" id="prizeFilters">
+        <button class="mini on" data-filter="all">전체</button>
+        <button class="mini" data-filter="pending">미사용</button>
+        <button class="mini" data-filter="done">사용완료</button>
+        <button class="mini addbtn" id="prizeAddToggle" type="button">＋ 당첨 추가</button>
+      </div>
+
+      <div class="card prize-form" id="prizeForm" hidden>
+        <div class="field">
+          <label class="f-label" for="prizeTitle">당첨 품목</label>
+          <input type="text" id="prizeTitle" placeholder="예: 컬쳐랜드상품권 10,000원">
+        </div>
+        <div class="field">
+          <label class="f-label" for="prizeSource">출처</label>
+          <input type="text" id="prizeSource" placeholder="예: 쿠팡체험단 · 국민건강보험공단 이벤트">
+        </div>
+        <div class="field">
+          <label class="f-label" for="prizeWonAt">당첨일</label>
+          <input type="date" id="prizeWonAt">
+        </div>
+        <div class="field">
+          <label class="f-label" for="prizeDue">유효기간·마감일</label>
+          <input type="text" id="prizeDue" placeholder="예: 2027-01-26 · 비우면 미정">
+        </div>
+        <div class="field">
+          <label class="f-label" for="prizeCoupon">쿠폰번호·메모</label>
+          <input type="text" id="prizeCoupon" placeholder="쿠폰번호 또는 확인할 내용">
+        </div>
+        <button class="btn full" id="addPrizeBtn" type="button">당첨 추가</button>
+      </div>
+
+      <div style="height:12px"></div>
+      <div id="prizeList"><div class="empty">당첨 내역을 불러오는 중이에요…</div></div>
     </section>
   </main>
 </div>
@@ -929,6 +1068,8 @@ const state = {
   tasks: {},
   agents: {},
   memos: {},
+  prizes: {},          // id -> { id, title, source, wonAt, due, coupon, used, usedAt, ts }
+  prizeFilter: 'all',  // all | pending | done
   taskOwner: 'manneungi',
   taskPrio: 'normal',
   online: false
@@ -1295,6 +1436,180 @@ async function addMemo(){
   }catch(e){ toast('추가 실패 — 연결을 확인해 주세요'); }
 }
 
+/* ---------------- 당첨함 ---------------- */
+const PRIZE_FILTER_LABEL = { all:'전체', pending:'미사용', done:'사용완료' };
+
+function todayStr(){
+  const d = new Date(), p = n => String(n).padStart(2,'0');
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+}
+
+/* 가입기간 문자열에서 날짜(YYYY-MM-DD)를 읽어 남은 날짜 계산 — 날짜가 아니면 글자만 보여 준다 */
+function dueInfo(due){
+  const s = String(due == null ? '' : due).trim();
+  const m = s.match(/(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);
+  if(!m) return { text:s, days:null };
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  if(isNaN(d.getTime())) return { text:s, days:null };
+  const today = new Date(); today.setHours(0,0,0,0);
+  return { text:s, days: Math.round((d - today) / 86400000) };
+}
+
+function prizeDueChip(due){
+  const info = dueInfo(due);
+  if(info.days === null){
+    if(!info.text) return '';
+    const check = /확인/.test(info.text);
+    return `<span class="prize-due">${check ? '📝' : '📅'} ${esc(info.text)}</span>`;
+  }
+  const days = info.days;
+  if(days < 0) return `<span class="prize-due over">⏰ 기한 지남 · ${esc(info.text)}</span>`;
+  if(days === 0) return `<span class="prize-due over">⏰ 오늘 마감 · ${esc(info.text)}</span>`;
+  if(days <= 7) return `<span class="prize-due soon">⏰ D-${days} · ${esc(info.text)} 까지</span>`;
+  return `<span class="prize-due">📅 ${esc(info.text)} 까지${days <= 30 ? ' · D-' + days : ''}</span>`;
+}
+
+function renderPrizes(){
+  const all = Object.values(state.prizes || {}).filter(p => p && p.title);
+  const pending = all.filter(p => !p.used).length;
+  const done = all.length - pending;
+
+  $('#prizeCount').textContent = all.length + '건';
+  $('#psTotal').textContent = all.length;
+  $('#psPending').textContent = pending;
+  $('#psDone').textContent = done;
+  const badge = $('#prizeTabBadge');
+  if(badge){ badge.textContent = pending; badge.hidden = pending === 0; }
+  $$('#prizeFilters [data-filter]').forEach(b => {
+    b.classList.toggle('on', b.dataset.filter === state.prizeFilter);
+  });
+
+  // 미사용이 위, 같은 그룹은 최신 당첨일 순
+  let list = all.slice().sort((a,b)=>{
+    const ua = a.used ? 1 : 0, ub = b.used ? 1 : 0;
+    if(ua !== ub) return ua - ub;
+    const wa = String(a.wonAt || ''), wb = String(b.wonAt || '');
+    if(wa !== wb) return wb.localeCompare(wa);
+    return (b.ts || 0) - (a.ts || 0);
+  });
+  if(state.prizeFilter === 'pending') list = list.filter(p => !p.used);
+  if(state.prizeFilter === 'done') list = list.filter(p => p.used);
+
+  const box = $('#prizeList');
+  if(!list.length){
+    box.innerHTML = all.length
+      ? `<div class="empty">${PRIZE_FILTER_LABEL[state.prizeFilter] || ''} 내역이 없어요.</div>`
+      : '<div class="empty">아직 등록된 당첨 내역이 없어요.<br>＋ 당첨 추가를 눌러 하나씩 쌓아 두세요.</div>';
+    return;
+  }
+
+  box.innerHTML = list.map(p=>{
+    const used = !!p.used;
+    const coupon = String(p.coupon || '').trim();
+    const src = [p.source, p.wonAt ? p.wonAt + ' 당첨' : ''].filter(Boolean).join(' · ');
+    return `
+      <div class="prize ${used ? 'used' : ''}">
+        <div class="prize-top">
+          <button class="prize-check ${used ? 'on' : ''}" data-act="toggle" data-id="${esc(p.id)}"
+            title="${used ? '미사용으로 되돌리기' : '사용완료로 표시'}"
+            aria-label="${used ? '미사용으로 되돌리기' : '사용완료로 표시'}">✓</button>
+          <div class="prize-main">
+            <div class="prize-title">${esc(p.title)}</div>
+            ${src ? `<div class="prize-src">${esc(src)}</div>` : ''}
+          </div>
+          <button class="prize-badge ${used ? 'used' : ''}" data-act="toggle" data-id="${esc(p.id)}"
+            title="눌러서 상태 바꾸기">${used ? '사용완료' : '미사용'}</button>
+        </div>
+        ${p.due ? `<div class="prize-meta">${prizeDueChip(p.due)}</div>` : ''}
+        ${coupon ? `<div class="prize-coupon"><code>${esc(coupon)}</code>
+          <button class="prize-copy" data-act="copy" data-id="${esc(p.id)}">복사</button></div>` : ''}
+        <div class="prize-foot"><button class="prize-del" data-act="del" data-id="${esc(p.id)}">삭제</button></div>
+      </div>`;
+  }).join('');
+}
+
+async function loadPrizes(){
+  try{
+    const data = await fbGet('prizes');
+    if(!dataChanged('prizes', data)) return;
+    state.prizes = {};
+    if(data) Object.keys(data).forEach(k => state.prizes[k] = Object.assign({id:k}, data[k]));
+    renderPrizes();
+  }catch(e){ console.warn(e); }
+}
+
+async function addPrize(){
+  const title = $('#prizeTitle').value.trim();
+  if(!title){ toast('당첨 품목을 적어 주세요'); return; }
+  const btn = $('#addPrizeBtn');
+  btn.disabled = true;
+  try{
+    await fbPost('prizes', {
+      title: title,
+      source: $('#prizeSource').value.trim(),
+      wonAt: $('#prizeWonAt').value || todayStr(),
+      due: $('#prizeDue').value.trim(),
+      coupon: $('#prizeCoupon').value.trim(),
+      used: false,
+      ts: Date.now()
+    });
+    ['prizeTitle','prizeSource','prizeDue','prizeCoupon'].forEach(id => { $('#'+id).value = ''; });
+    $('#prizeWonAt').value = todayStr();
+    state.prizeFilter = 'all';
+    delete sig['prizes'];
+    toast('당첨 내역을 추가했어요');
+    await loadPrizes();
+  }catch(e){
+    toast('추가 실패 — 연결을 확인해 주세요');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+async function togglePrize(id){
+  const p = state.prizes[id];
+  if(!p) return;
+  const next = !p.used;
+  try{
+    await fbPatch('prizes/' + id, { used: next, usedAt: next ? Date.now() : null });
+    delete sig['prizes'];
+    await loadPrizes();
+    toast(next ? '사용완료로 표시했어요' : '미사용으로 되돌렸어요');
+  }catch(e){ toast('변경 실패 — 연결을 확인해 주세요'); }
+}
+
+async function deletePrize(id){
+  if(!confirm('이 당첨 내역을 삭제할까요?')) return;
+  try{
+    await fbDelete('prizes/' + id);
+    delete sig['prizes'];
+    await loadPrizes();
+    toast('삭제했어요');
+  }catch(e){ toast('삭제 실패 — 연결을 확인해 주세요'); }
+}
+
+async function copyCoupon(id){
+  const p = state.prizes[id];
+  const text = String((p && p.coupon) || '').trim();
+  if(!text){ toast('복사할 내용이 없어요'); return; }
+  try{
+    await navigator.clipboard.writeText(text);
+    toast('복사했어요 — 붙여넣기 하세요');
+  }catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly','');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try{ ok = document.execCommand('copy'); }catch(_){}
+    ta.remove();
+    toast(ok ? '복사했어요 — 붙여넣기 하세요' : '복사하지 못했어요 — 길게 눌러 직접 복사해 주세요');
+  }
+}
+
 /* ---------------- 탭 / 방 전환 ---------------- */
 function switchTab(tab){
   state.tab = tab;
@@ -1304,6 +1619,7 @@ function switchTab(tab){
   if(tab === 'task'){ loadTasks(); }
   if(tab === 'agent'){ loadAgents(); }
   if(tab === 'memo'){ loadMemos(); }
+  if(tab === 'prize'){ loadPrizes(); }
   const t = document.querySelector('.tab.active');
   if(t && t.scrollIntoView) t.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
 }
@@ -1458,6 +1774,35 @@ $('#memoList').addEventListener('click', async e=>{
   }catch(err){ toast('변경 실패 — 연결을 확인해 주세요'); }
 });
 
+/* 당첨함: 필터 · 추가 폼 · 카드 동작 */
+$('#prizeFilters').addEventListener('click', e=>{
+  const b = e.target.closest('[data-filter]');
+  if(!b) return;
+  state.prizeFilter = b.dataset.filter;
+  renderPrizes();
+});
+
+$('#prizeAddToggle').addEventListener('click', ()=>{
+  const form = $('#prizeForm');
+  form.hidden = !form.hidden;
+  if(form.hidden) return;
+  if(!$('#prizeWonAt').value) $('#prizeWonAt').value = todayStr();
+  $('#prizeTitle').focus();
+  if(form.scrollIntoView) form.scrollIntoView({block:'nearest', behavior:'smooth'});
+});
+
+$('#addPrizeBtn').addEventListener('click', addPrize);
+$('#prizeTitle').addEventListener('keydown', e=>{ if(e.key === 'Enter') addPrize(); });
+
+$('#prizeList').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-act]');
+  if(!b) return;
+  const id = b.dataset.id;
+  if(b.dataset.act === 'toggle') togglePrize(id);
+  else if(b.dataset.act === 'copy') copyCoupon(id);
+  else if(b.dataset.act === 'del') deletePrize(id);
+});
+
 /* 방별 메시지 스트림 (방을 옮기면 이전 스트림을 닫고 새로 연결) */
 let roomStreamPath = null;
 function streamRoom(){
@@ -1472,14 +1817,16 @@ function streamRoom(){
 function boot(){
   buildComposer();
   setConn('connecting');
+  if($('#prizeWonAt') && !$('#prizeWonAt').value) $('#prizeWonAt').value = todayStr();
   // SSE 구독: 경로별로 이벤트가 오면 해당 데이터 재조회
   streamRoom();
   stream('tasks', ()=> loadTasks());
   stream('agents', ()=> loadAgents());
   stream('memos', ()=> loadMemos());
+  stream('prizes', ()=> loadPrizes());
 
   // 초기 로드
-  loadMessages(); loadTasks(); loadAgents(); loadMemos();
+  loadMessages(); loadTasks(); loadAgents(); loadMemos(); loadPrizes();
 
   // 폴링 폴백 (5초) — SSE가 죽어도 화면이 멈추지 않게
   setInterval(()=>{
@@ -1488,6 +1835,7 @@ function boot(){
     if(state.tab === 'task') loadTasks();
     if(state.tab === 'agent') loadAgents();
     if(state.tab === 'memo') loadMemos();
+    if(state.tab === 'prize') loadPrizes();
   }, 5000);
 
   // 연결 표시 감시
@@ -1638,7 +1986,8 @@ function restartStreams(){
   stream('tasks', ()=> loadTasks());
   stream('agents', ()=> loadAgents());
   stream('memos', ()=> loadMemos());
-  loadMessages(); loadTasks(); loadAgents(); loadMemos();
+  stream('prizes', ()=> loadPrizes());
+  loadMessages(); loadTasks(); loadAgents(); loadMemos(); loadPrizes();
 }
 
 function wireAuthState(){
