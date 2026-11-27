@@ -45,3 +45,17 @@ memos/{id}                              { text, done, ts }
 
 - `index.html` — 앱 전체 (HTML + CSS + JS, 외부 라이브러리 없음)
 - `office-clay.png` — 오피스 맵 이미지
+
+## 배포
+
+- 라이브 주소: <https://yongq7.github.io/pickle-office/> (GitHub Pages, `gh-pages` 브랜치 루트)
+- 고친 내용을 올릴 때:
+
+  ```bash
+  git push origin main
+  git push origin main:gh-pages   # GitHub Pages가 보는 브랜치
+  ```
+
+- Pages 소스가 `main`이 아니라 `gh-pages` 브랜치로 설정되어 있습니다. 저장소
+  **Settings → Pages → Build and deployment**에서 `main` / `/ (root)`로 바꾸면
+  `gh-pages` 없이 `main`만 올려도 자동 반영됩니다.
