@@ -7,6 +7,18 @@ Firebase Realtime Database에서 실시간으로 동기화됩니다. 승인된 �
 - **주소**: https://yongq7.github.io/pickle-office/
 - **저장소**: https://github.com/yongq7/pickle-office
 
+## 앱으로 설치 (PWA)
+
+안드로이드 크롬에서 주소를 열고 **⋮ → 앱 설치**(또는 주소창의 설치 아이콘)를 누르면
+홈 화면에 앱으로 설치됩니다. 주소창 없이 전체 화면(standalone)으로 열리고,
+아이콘은 크림 바탕에 금빛 왕관입니다.
+
+- 매니페스트: `manifest.webmanifest` (`display: standalone`, `start_url`·`scope` = `/pickle-office/`)
+- 아이콘: `icon-192.png`(192×192, any) · `icon-512.png`(512×512, any + maskable) · `apple-touch-icon.png`
+- 서비스워커: `sw.js` — 페이지·HTML은 네트워크 우선(새 배포 즉시 반영),
+  아이콘·맵 이미지는 캐시 우선+뒤에서 갱신. Firebase·CDN 등 다른 출처 요청은 가로채지 않습니다.
+- 아이콘을 다시 만들려면: `python3 tools/make_icons.py` (Pillow 필요)
+
 ## 구성
 
 | 탭 | 하는 일 |
@@ -77,6 +89,8 @@ memos/{id}                              { text, done, ts }
 - `index.html` — 앱 전체 (HTML + CSS + JS). Firebase JS SDK v10 compat
   (`firebase-app-compat.js`, `firebase-auth-compat.js`)만 CDN에서 불러옵니다.
 - `office-clay.png` — 오피스 맵 이미지
+- `manifest.webmanifest` · `sw.js` · `icon-192.png` · `icon-512.png` · `apple-touch-icon.png` — PWA 설치용
+- `tools/make_icons.py` — PWA 아이콘 생성 스크립트
 
 ## 배포
 
