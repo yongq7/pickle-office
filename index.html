@@ -283,6 +283,19 @@
     background:linear-gradient(160deg,#9C5423,#7B3E13);color:#FFF9EE;
     border-color:#7B3E13;box-shadow:0 3px 9px rgba(139,69,19,.26);
   }
+  /* 발신자는 로그인 계정으로 고정 — 읽기 전용 배지 */
+  .send-as-badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:7px 12px;border-radius:999px;
+    background:linear-gradient(160deg,#9C5423,#7B3E13);color:#FFF9EE;
+    border:1px solid #7B3E13;box-shadow:0 3px 9px rgba(139,69,19,.26);
+    font-size:11.8px;font-weight:800;letter-spacing:-.2px;
+    user-select:none;cursor:default;
+  }
+  .send-as-badge .fix{
+    font-size:9.5px;font-weight:700;color:#F1D9BC;
+    margin-left:4px;letter-spacing:0;opacity:.95;
+  }
   .mentions{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:8px;padding:1px 0}
   .mentions::-webkit-scrollbar{display:none}
   .mbtn{
@@ -667,7 +680,7 @@
       <div class="composer">
         <div class="send-as">
           <span class="send-as-label">발신</span>
-          <div class="chips" id="senderChips"></div>
+          <span class="send-as-badge" id="senderBadge"></span>
         </div>
         <div class="mentions" id="mentionBtns"></div>
         <div class="input-row">
@@ -768,6 +781,70 @@ const ROOMS = {
   lounge:  { name:'라운지',   emoji:'☕' }
 };
 const AGENT_KEYS = ['manneungi','yeolmae','claude','gpt'];
+
+/* ---- 발신자: 로그인 계정으로 고정 ----
+   발신자 선택 UI는 두지 않고, 로그인한 계정의 이메일로만 정해진다. */
+const EMAIL_MEMBER = {
+  'yongq7@gmail.com':              'yonggyu',
+  'bblou0486@gmail.com':           'yeolmae',
+  'yeolmae@pickle-office.local':   'yeolmae',
+  'claude@pickle-office.local':    'claude',
+  'gpt@pickle-office.local':       'gpt',
+  'bot@pickle-office.local':       'manneungi'
+};
+/* 같은 사람을 가리키는 예전 표기(키/이름) — DB에 남아 있는 값도 같은 사람으로 본다 */
+const SENDER_ALIASES = {
+  yonggyu:   ['yonggyu','대장님'],
+  manneungi: ['manneungi','만능이'],
+  yeolmae:   ['yeolmae','열매'],
+  claude:    ['claude','클로드'],
+  gpt:       ['gpt','GPT']
+};
+
+let currentMemberKey = 'yonggyu';   // 로그인 계정으로 결정되는 현재 발신자
+
+/* 로그인·토큰 갱신 때 현재 발신자 갱신 */
+function applyCurrentMember(email){
+  const prev = currentMemberKey;
+  currentMemberKey = memberKeyForEmail(email);
+  state.sender = currentMemberKey;
+  renderSenderBadge();
+  if(prev !== currentMemberKey){
+    // 이미 보고 있던 방은 좌/우 정렬이 바뀌므로 캐시를 버리고 다시 그린다
+    Object.keys(sig).forEach(k => delete sig[k]);
+    if(started && state.messages[state.room]) renderMessages();
+  }
+  return prev !== currentMemberKey;
+}
+
+function memberKeyForEmail(email){
+  const em = String(email == null ? '' : email).trim().toLowerCase();
+  if(!em) return 'yonggyu';
+  if(EMAIL_MEMBER[em]) return EMAIL_MEMBER[em];
+  // 그 밖의 계정: 로컬파트가 아는 이름이면 그 사람, 아니면 대장님으로 폴백
+  const local = em.split('@')[0];
+  if(EMAIL_MEMBER[local]) return EMAIL_MEMBER[local];
+  const byAlias = canonSender(local);
+  return byAlias || 'yonggyu';
+}
+
+/* 어떤 표기가 들어와도 MEMBERS의 키 하나로 정규화 ('yeolmae'/'열매' → 'yeolmae') */
+function canonSender(value){
+  const s = String(value == null ? '' : value).trim();
+  if(!s) return '';
+  if(MEMBERS[s]) return s;
+  const low = s.toLowerCase();
+  if(MEMBERS[low]) return low;
+  for(const key of Object.keys(SENDER_ALIASES)){
+    if(SENDER_ALIASES[key].some(v => String(v).toLowerCase() === low)) return key;
+  }
+  return '';
+}
+/* 메시지 한 건의 발신자 키 — sender가 비어 있던 옛 메시지는 name으로도 판별 */
+function senderKeyOf(m){
+  if(!m) return '';
+  return canonSender(m.sender) || canonSender(m.name) || '';
+}
 const STATUS_LABEL = { todo:'대기', doing:'실행중', done:'완료' };
 const STATUS_NEXT  = { todo:'doing', doing:'done', done:'todo' };
 const PRIO_LABEL   = { high:'높음', normal:'보통', low:'낮음' };
@@ -926,8 +1003,9 @@ function renderMessages(){
   }
   const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
   box.innerHTML = list.map(m => {
-    const who = MEMBERS[m.sender] || { name: m.name || '비서', emoji: m.emoji || '🐾', role: m.role || '' };
-    const mine = m.sender === 'yonggyu';
+    const key = senderKeyOf(m);
+    const who = MEMBERS[key] || { name: m.name || '비서', emoji: m.emoji || '🐾', role: m.role || '' };
+    const mine = !!key && key === currentMemberKey;   // 로그인한 사람의 글만 오른쪽
     return `
       <div class="msg ${mine ? 'me' : ''}">
         <div class="avatar">${esc(who.emoji)}</div>
@@ -964,12 +1042,13 @@ async function sendMessage(){
   const input = $('#msgInput');
   const text = input.value.trim();
   if(!text) return;
-  const who = MEMBERS[state.sender];
+  const sender = currentMemberKey;
+  const who = MEMBERS[sender];
   const btn = $('#sendBtn');
   btn.disabled = true;
   try{
     await fbPost('messages/' + state.room, {
-      sender: state.sender,
+      sender: sender,
       name: who.name,
       emoji: who.emoji,
       role: who.role,
@@ -1169,11 +1248,16 @@ function switchRoom(room, goBackToMap){
 }
 
 /* ---------------- 초기 UI 구성 ---------------- */
+function renderSenderBadge(){
+  const m = MEMBERS[currentMemberKey] || MEMBERS.yonggyu;
+  const el = $('#senderBadge');
+  if(!el) return;
+  el.innerHTML = `${esc(m.emoji)} ${esc(m.name)}<span class="fix">고정</span>`;
+  el.title = '로그인한 계정의 발신자로 고정되어 있어요';
+}
+
 function buildComposer(){
-  $('#senderChips').innerHTML = Object.entries(MEMBERS).map(([k,m])=>`
-    <button class="chip ${k === state.sender ? 'active' : ''}" data-sender="${k}">
-      ${esc(m.emoji)} ${esc(m.name)}
-    </button>`).join('');
+  renderSenderBadge();
 
   const mentions = [['all','@all'],['만능이','@만능이'],['열매','@열매'],['클로드','@클로드'],['GPT','@GPT']];
   $('#mentionBtns').innerHTML = mentions.map(([key,label])=>`
@@ -1202,13 +1286,6 @@ $('#panel-map').addEventListener('click', e=>{
 $('#roomChips').addEventListener('click', e=>{
   const b = e.target.closest('.rchip');
   if(b) switchRoom(b.dataset.room);
-});
-
-$('#senderChips').addEventListener('click', e=>{
-  const b = e.target.closest('.chip');
-  if(!b) return;
-  state.sender = b.dataset.sender;
-  $$('#senderChips .chip').forEach(c => c.classList.toggle('active', c === b));
 });
 
 $('#mentionBtns').addEventListener('click', e=>{
@@ -1511,6 +1588,7 @@ function wireAuthState(){
     }
     const changed = fresh !== tokenInUse;
     idToken = fresh;
+    applyCurrentMember(user.email);   // 누가 로그인했는지로 발신자·정렬이 정해진다
     if(!started){
       tokenInUse = fresh;
       startApp();

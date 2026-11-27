@@ -12,7 +12,7 @@ Firebase Realtime Database에서 실시간으로 동기화됩니다. 승인된 �
 | 탭 | 하는 일 |
 | --- | --- |
 | 🗺️ 오피스 맵 | 클레이 3D 오피스 이미지 위에서 방(지휘실·대회의실·라운지)과 멤버 위치를 확인하고, 방 이름표를 눌러 바로 들어갑니다. |
-| 💬 회의실 | 방별 채팅. 발신자(대장님·만능이·열매·클로드·GPT)를 골라 말하고 `@멘션`으로 호출합니다. |
+| 💬 회의실 | 방별 채팅. 발신자는 **로그인한 계정으로 고정**되어(대장님·만능이·열매·클로드·GPT 중 하나) 본인 글은 오른쪽에 뜨고, `@멘션`으로 호출합니다. |
 | 📋 작업실 | 작업 등록(담당자·우선순위)과 상태 변경(대기 → 실행중 → 완료), 삭제. |
 | 📊 비서현황 | 비서 4인의 온라인/대기 상태, 현재 작업, 메모를 보고 바로 고칩니다. |
 | 📝 메모 | 공유 메모 추가·완료 체크·삭제. |
@@ -67,7 +67,7 @@ Realtime Database 규칙이 잠겨 있어 로그인 토큰 없이는 읽기도 �
 
 ```
 agents/{manneungi|yeolmae|claude|gpt}   { name, role, status, task, memo }
-messages/{general|command|lounge}/{id}  { sender, name, emoji, role, text, ts }
+messages/{general|command|lounge}/{id}  { sender, name, emoji, role, text, ts }   // sender는 로그인 계정 키(yonggyu|manneungi|yeolmae|claude|gpt), 예전 값 '열매'는 'yeolmae'로 호환
 tasks/{id}                              { title, owner, priority, status, ts }
 memos/{id}                              { text, done, ts }
 ```
