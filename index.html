@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>뭐든다함 비서실</title>
+<meta name="description" content="용규님 전용 뭐든다함 비서실 — 오피스 맵, 회의실, 작업실, 비서현황, 메모">
+<meta name="theme-color" content="#F7F1E5">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F1E5;
+    --paper:#FFFDF9;
+    --wood:#8B4513;
+    --wood-dark:#5A3A22;
+    --wood-light:#C1743A;
+    --line:#E8DFD1;
+    --line-soft:#F0E7D8;
+    --muted:#9A8C79;
+    --peach:#FDEBE3;
+    --peach-line:#F3CFC1;
+    --green:#2FA36B;
+    --green-soft:#E7F6EE;
+    --shadow:0 6px 18px rgba(139,69,19,.08);
+    --shadow-sm:0 2px 8px rgba(139,69,19,.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    font-family:"Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 80% at 50% -10%, #FFF9EF 0%, #F7F1E5 45%, #F1E8D8 100%);
+    color:var(--wood-dark);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  #app{
+    max-width:620px;margin:0 auto;height:100dvh;
+    display:flex;flex-direction:column;
+    background:linear-gradient(180deg,#FDF8EE 0%, #F7F1E5 38%, #F3EBDB 100%);
+    box-shadow:0 0 40px rgba(139,69,19,.10);
+    position:relative;
+  }
+
+  /* ================= header ================= */
+  header{
+    flex:none;display:flex;align-items:center;gap:11px;
+    padding:14px 16px 12px;
+    background:linear-gradient(180deg,#FFFAF1,#FBF4E7);
+    border-bottom:1px solid var(--line-soft);
+    position:relative;z-index:5;
+  }
+  .logo{
+    width:46px;height:46px;flex:none;border-radius:16px;
+    background:radial-gradient(circle at 32% 28%,#FFF6DF,#FFE7B8 60%,#F6D69A 100%);
+    border:1px solid #F0D9A9;
+    display:grid;place-items:center;font-size:24px;
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.9), 0 3px 10px rgba(200,150,70,.20);
+  }
+  .brand{min-width:0;flex:1}
+  .brand h1{
+    margin:0;font-size:20px;font-weight:800;letter-spacing:-.5px;
+    color:#4A2E1A;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .brand .sub{
+    display:flex;align-items:center;gap:5px;margin-top:4px;
+    font-size:12.5px;font-weight:600;color:#7C6A55;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex:none;box-shadow:0 0 0 3px rgba(47,163,107,.13)}
+  .conn{
+    flex:none;display:flex;align-items:center;gap:6px;
+    padding:7px 11px;border-radius:999px;
+    background:var(--green-soft);border:1px solid #CFEBD9;
+    font-size:12px;font-weight:700;color:#1F7A50;
+    white-space:nowrap;
+  }
+  .conn .dot{background:var(--green);box-shadow:0 0 0 3px rgba(47,163,107,.12)}
+  .conn.connecting{background:#FFF4DC;border-color:#F1DDAE;color:#9A6B12}
+  .conn.connecting .dot{background:#E0A020;box-shadow:0 0 0 3px rgba(224,160,32,.15)}
+  .conn.offline{background:#FBEAE4;border-color:#F3D3C6;color:#A2502F}
+  .conn.offline .dot{background:#D9704A;box-shadow:0 0 0 3px rgba(217,112,74,.15)}
+
+  /* ================= tabs ================= */
+  nav.tabs{
+    flex:none;display:flex;gap:6px;
+    padding:10px 12px;overflow-x:auto;scrollbar-width:none;
+    background:#FDF8EE;border-bottom:1px solid var(--line-soft);
+    position:relative;z-index:4;
+  }
+  nav.tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:none;border:0;cursor:pointer;font-family:inherit;
+    display:flex;align-items:center;gap:5px;
+    padding:9px 12px;border-radius:13px;white-space:nowrap;
+    background:transparent;color:#8B7355;
+    font-size:12.8px;font-weight:700;letter-spacing:-.2px;
+    transition:background .18s,color .18s,box-shadow .18s,transform .12s;
+  }
+  .tab:active{transform:scale(.96)}
+  .tab.active{
+    background:linear-gradient(160deg,#9C5423,#7B3E13);
+    color:#FFF9EE;
+    box-shadow:0 5px 14px rgba(139,69,19,.30), inset 0 1px 0 rgba(255,255,255,.16);
+  }
+
+  /* ================= panels ================= */
+  main{flex:1;min-height:0;display:flex;flex-direction:column}
+  .panel{display:none;flex:1;min-height:0;overflow-y:auto;padding:14px 14px 22px;-webkit-overflow-scrolling:touch}
+  .panel.active{display:flex;flex-direction:column}
+  #panel-room{padding:0;overflow:hidden}
+
+  /* ---------- office map ---------- */
+  .banner{
+    border-radius:20px;padding:16px 16px 18px;
+    background:
+      radial-gradient(130% 120% at 100% 0%, #FFE9CC 0%, rgba(255,233,204,0) 55%),
+      linear-gradient(150deg,#FDF4E4,#F8EBD6 65%,#F4E2C6);
+    border:1px solid #EFDFC6;
+    box-shadow:var(--shadow-sm);
+  }
+  .banner-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:rgba(255,253,249,.92);border:1px solid #EFDFC6;
+    border-radius:999px;padding:5px 11px;
+    font-size:11.5px;font-weight:700;color:#8A5A2B;
+  }
+  .banner h2{
+    margin:11px 0 6px;font-size:21px;line-height:1.32;letter-spacing:-.7px;
+    font-weight:800;color:#3F2814;word-break:keep-all;
+  }
+  .banner p{margin:0;font-size:12.8px;line-height:1.55;color:#8A7860;word-break:keep-all}
+
+  .badge-row{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 2px}
+  .pill{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:7px 12px;border-radius:999px;
+    background:var(--paper);border:1px solid var(--line);
+    font-size:12px;font-weight:700;color:#7C6248;
+    box-shadow:0 1px 3px rgba(139,69,19,.05);
+  }
+  .pill.on{background:#F4FBF7;border-color:#D2EBDD;color:#1F7A50}
+
+  .mapwrap{
+    position:relative;margin-top:14px;border-radius:22px;overflow:hidden;
+    background:#E9D9BF;border:1px solid #E3D2B7;
+    box-shadow:var(--shadow);
+    aspect-ratio:1/1;
+  }
+  .mapwrap img{display:block;width:100%;height:100%;object-fit:cover}
+  .pin{
+    position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);
+    display:inline-flex;align-items:center;gap:5px;
+    padding:8px 12px;border-radius:999px;cursor:pointer;
+    background:rgba(255,253,249,.96);
+    border:1px solid rgba(232,223,209,.95);
+    color:#5A3A22;font-family:inherit;font-size:12.3px;font-weight:800;letter-spacing:-.3px;
+    box-shadow:0 4px 12px rgba(90,58,34,.22);
+    transition:transform .14s,box-shadow .14s,background .14s;
+    white-space:nowrap;
+  }
+  .pin:active{transform:translate(-50%,-50%) scale(.94)}
+  .pin:hover{background:#FFF;box-shadow:0 6px 16px rgba(90,58,34,.28)}
+  .pin::after{
+    content:"";position:absolute;inset:-1px;border-radius:999px;
+    border:1px solid rgba(201,138,72,.35);pointer-events:none;
+  }
+  .who{
+    position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);
+    display:inline-flex;align-items:center;gap:4px;
+    padding:4px 8px 4px 6px;border-radius:999px;
+    background:rgba(255,250,240,.93);
+    border:1px solid rgba(214,190,158,.9);
+    font-size:10.5px;font-weight:800;color:#6B4A2B;letter-spacing:-.3px;
+    box-shadow:0 2px 7px rgba(90,58,34,.16);
+    white-space:nowrap;pointer-events:none;
+  }
+  .who .dot{width:5px;height:5px;box-shadow:0 0 0 2px rgba(47,163,107,.13)}
+  .map-hint{
+    margin:11px 2px 0;font-size:11.8px;color:var(--muted);line-height:1.5;text-align:center;
+  }
+  .member-legend{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  .legend-item{
+    display:flex;align-items:center;gap:8px;padding:10px 11px;border-radius:14px;
+    background:var(--paper);border:1px solid var(--line-soft);
+    font-size:12px;font-weight:700;color:#6B5138;box-shadow:0 1px 2px rgba(139,69,19,.04);
+  }
+  .legend-item .av{font-size:16px;line-height:1}
+  .legend-item small{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:2px}
+
+  /* ---------- meeting room ---------- */
+  .room-bar{
+    flex:none;padding:12px 14px 10px;background:#FDF8EE;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .room-chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .room-chips::-webkit-scrollbar{display:none}
+  .rchip{
+    flex:none;cursor:pointer;font-family:inherit;
+    display:inline-flex;align-items:center;gap:6px;
+    padding:9px 14px;border-radius:999px;
+    background:#FBF5E9;border:1px solid var(--line);
+    color:#8B7355;font-size:12.8px;font-weight:700;letter-spacing:-.3px;
+    transition:all .16s;
+  }
+  .rchip:active{transform:scale(.97)}
+  .rchip.active{
+    background:#FFFDF9;border-color:#D9BE9B;color:#5A3A22;
+    box-shadow:0 3px 10px rgba(139,69,19,.14), inset 0 0 0 1px rgba(217,190,155,.35);
+  }
+  .room-meta{
+    display:flex;align-items:center;gap:6px;margin-top:10px;
+    font-size:11.8px;font-weight:700;color:#A2917C;letter-spacing:-.2px;
+  }
+  .room-meta .dot{width:6px;height:6px}
+
+  .msg-scroll{flex:1;min-height:0;overflow-y:auto;padding:16px 14px 8px;-webkit-overflow-scrolling:touch}
+  .msg{display:flex;gap:9px;margin-bottom:16px;align-items:flex-start}
+  .msg.me{flex-direction:row-reverse}
+  .avatar{
+    flex:none;width:38px;height:38px;border-radius:13px;font-size:19px;
+    display:grid;place-items:center;
+    background:linear-gradient(160deg,#FFFBF2,#F6EBD8);
+    border:1px solid #EEE0CB;
+    box-shadow:0 2px 6px rgba(139,69,19,.08);
+  }
+  .msg.me .avatar{background:linear-gradient(160deg,#FFF3E3,#FBE3C8);border-color:#F2D6B4}
+  .msg-body{max-width:80%;display:flex;flex-direction:column;gap:5px;min-width:0}
+  .msg.me .msg-body{align-items:flex-end}
+  .msg-head{display:flex;align-items:baseline;gap:6px;padding:0 3px;flex-wrap:wrap}
+  .msg.me .msg-head{flex-direction:row-reverse}
+  .msg-name{font-size:12.3px;font-weight:800;color:#5A3A22;letter-spacing:-.3px}
+  .msg-role{font-size:10.8px;font-weight:600;color:#A99B87}
+  .msg-time{font-size:10.5px;color:#B6A996;font-weight:600}
+  .bubble{
+    padding:12px 14px;border-radius:16px;
+    background:var(--paper);border:1px solid var(--line-soft);
+    font-size:13.6px;line-height:1.62;color:#4A3A2A;
+    letter-spacing:-.25px;word-break:keep-all;overflow-wrap:anywhere;
+    box-shadow:0 2px 8px rgba(139,69,19,.05);
+    border-top-left-radius:6px;
+  }
+  .msg.me .bubble{
+    background:linear-gradient(160deg,#FDEBE3,#FBE0D4);
+    border-color:var(--peach-line);color:#5A3220;
+    border-top-left-radius:16px;border-top-right-radius:6px;
+    box-shadow:0 2px 8px rgba(193,116,58,.10);
+  }
+  .mention-tag{
+    background:#FFE7BF;color:#8A5218;font-weight:800;
+    padding:1px 4px;border-radius:5px;
+  }
+  .msg-empty{
+    text-align:center;color:#A99B87;font-size:12.5px;line-height:1.7;
+    padding:38px 16px;
+  }
+  .msg-empty .big{font-size:30px;display:block;margin-bottom:8px}
+
+  .composer{
+    flex:none;background:linear-gradient(180deg,#FDF8EE,#FBF3E4);
+    border-top:1px solid var(--line);
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    box-shadow:0 -6px 18px rgba(139,69,19,.06);
+  }
+  .send-as{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .send-as-label{font-size:11px;font-weight:800;color:#A2917C;flex:none;letter-spacing:.3px}
+  .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px 0}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:none;cursor:pointer;font-family:inherit;
+    display:inline-flex;align-items:center;gap:4px;
+    padding:7px 11px;border-radius:999px;
+    background:#FFFDF9;border:1px solid var(--line);
+    color:#7C6248;font-size:11.8px;font-weight:700;letter-spacing:-.2px;
+    transition:all .15s;
+  }
+  .chip:active{transform:scale(.96)}
+  .chip.active{
+    background:linear-gradient(160deg,#9C5423,#7B3E13);color:#FFF9EE;
+    border-color:#7B3E13;box-shadow:0 3px 9px rgba(139,69,19,.26);
+  }
+  .mentions{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:8px;padding:1px 0}
+  .mentions::-webkit-scrollbar{display:none}
+  .mbtn{
+    flex:none;cursor:pointer;font-family:inherit;
+    padding:5px 10px;border-radius:999px;
+    background:#FBF4E6;border:1px dashed #DFCDB2;
+    color:#96754F;font-size:11.5px;font-weight:700;
+    transition:all .15s;
+  }
+  .mbtn:active{transform:scale(.95);background:#F6EAD4}
+  .input-row{display:flex;gap:8px;align-items:flex-end}
+  #msgInput{
+    flex:1;min-height:44px;max-height:104px;resize:none;
+    padding:12px 14px;border-radius:15px;
+    border:1px solid var(--line);background:#FFFDF9;
+    font-family:inherit;font-size:13.5px;line-height:1.45;color:#4A3A2A;
+    letter-spacing:-.2px;outline:none;
+    transition:border-color .16s, box-shadow .16s;
+  }
+  #msgInput::placeholder{color:#BBAE9A}
+  #msgInput:focus{border-color:#D9BE9B;box-shadow:0 0 0 3px rgba(217,190,155,.28)}
+  .send{
+    flex:none;height:44px;min-width:62px;cursor:pointer;font-family:inherit;
+    border:0;border-radius:15px;
+    background:linear-gradient(160deg,#A75C28,#7B3E13);
+    color:#FFF9EE;font-size:13.5px;font-weight:800;letter-spacing:-.2px;
+    box-shadow:0 4px 12px rgba(139,69,19,.28);
+    transition:transform .12s,box-shadow .16s,opacity .16s;
+  }
+  .send:active{transform:scale(.96);box-shadow:0 2px 7px rgba(139,69,19,.24)}
+  .send[disabled]{opacity:.55;cursor:default}
+
+  /* ---------- tasks / agents / memos generic ---------- */
+  .card{
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:18px;
+    padding:14px;box-shadow:var(--shadow-sm);
+  }
+  .card + .card{margin-top:10px}
+  .sec-title{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    margin:2px 2px 10px;font-size:13px;font-weight:800;color:#5A3A22;letter-spacing:-.3px;
+  }
+  .sec-title .count{
+    font-size:11px;font-weight:700;color:#A2917C;background:#F7EEDD;
+    border:1px solid var(--line);border-radius:999px;padding:3px 9px;
+  }
+  label.f-label{display:block;font-size:11.5px;font-weight:800;color:#A2917C;margin:0 0 6px 2px;letter-spacing:.2px}
+  input[type=text], textarea.txt, select{
+    width:100%;font-family:inherit;font-size:13px;color:#4A3A2A;
+    padding:11px 13px;border-radius:13px;
+    border:1px solid var(--line);background:#FFFDF9;outline:none;
+    letter-spacing:-.2px;transition:border-color .16s, box-shadow .16s;
+  }
+  input[type=text]::placeholder, textarea.txt::placeholder{color:#BBAE9A}
+  input[type=text]:focus, textarea.txt:focus{border-color:#D9BE9B;box-shadow:0 0 0 3px rgba(217,190,155,.26)}
+  .field + .field{margin-top:11px}
+  .btn{
+    cursor:pointer;font-family:inherit;border:0;border-radius:13px;
+    padding:12px 16px;font-size:13px;font-weight:800;letter-spacing:-.2px;
+    background:linear-gradient(160deg,#A75C28,#7B3E13);color:#FFF9EE;
+    box-shadow:0 4px 12px rgba(139,69,19,.24);transition:transform .12s,opacity .16s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn.ghost{
+    background:#FFFDF9;color:#8B6B48;border:1px solid var(--line);
+    box-shadow:none;font-weight:700;
+  }
+  .btn.full{width:100%;margin-top:12px}
+  .mini-chips{display:flex;gap:6px;flex-wrap:wrap}
+  .mini{
+    cursor:pointer;font-family:inherit;
+    padding:7px 11px;border-radius:999px;
+    background:#FBF5E9;border:1px solid var(--line);
+    color:#8B7355;font-size:11.8px;font-weight:700;transition:all .15s;
+  }
+  .mini:active{transform:scale(.96)}
+  .mini.on{background:#FFF1DE;border-color:#E4C79B;color:#8A5218;box-shadow:inset 0 0 0 1px rgba(228,199,155,.5)}
+
+  /* tasks */
+  .task{
+    display:flex;gap:10px;align-items:flex-start;
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:16px;
+    padding:12px 13px;box-shadow:0 1px 4px rgba(139,69,19,.05);
+  }
+  .task + .task{margin-top:9px}
+  .task.done{opacity:.62}
+  .task.done .task-title{text-decoration:line-through;color:#9A8C79}
+  .task-main{flex:1;min-width:0}
+  .task-title{font-size:13.3px;font-weight:700;color:#4A3A2A;line-height:1.45;letter-spacing:-.2px;word-break:keep-all}
+  .task-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;align-items:center}
+  .tag{
+    font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:999px;
+    background:#F7EEDD;color:#8B6B48;border:1px solid #EFE1C9;letter-spacing:-.1px;
+  }
+  .tag.high{background:#FDE8E2;color:#B4502B;border-color:#F6D2C6}
+  .tag.normal{background:#FBF1DC;color:#8A6A1E;border-color:#EFE0BE}
+  .tag.low{background:#EDF5EF;color:#3E7A56;border-color:#D8E9DE}
+  .tag.st-todo{background:#F1EEE6;color:#7C6A55;border-color:#E5DFD2}
+  .tag.st-doing{background:#EAF2FB;color:#33608F;border-color:#D5E4F4}
+  .tag.st-done{background:#E9F6EE;color:#2F7A50;border-color:#CFEBD9}
+  .task-btns{display:flex;gap:6px;flex:none}
+  .icon-btn{
+    width:32px;height:32px;border-radius:11px;cursor:pointer;font-family:inherit;
+    border:1px solid var(--line);background:#FFFDF9;color:#8B7355;
+    font-size:14px;display:grid;place-items:center;transition:all .15s;
+  }
+  .icon-btn:active{transform:scale(.93)}
+  .icon-btn.del:hover{background:#FDEEE9;border-color:#F3D3C6;color:#B4502B}
+
+  /* agents */
+  .agent{
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:18px;
+    padding:13px 14px;box-shadow:var(--shadow-sm);
+  }
+  .agent + .agent{margin-top:10px}
+  .agent-top{display:flex;align-items:center;gap:11px}
+  .agent-av{
+    width:44px;height:44px;flex:none;border-radius:15px;font-size:22px;
+    display:grid;place-items:center;
+    background:linear-gradient(160deg,#FFFBF2,#F6EBD8);border:1px solid #EEE0CB;
+  }
+  .agent-name{font-size:14px;font-weight:800;color:#4A2E1A;letter-spacing:-.3px}
+  .agent-role{font-size:11.5px;font-weight:600;color:#A2917C;margin-top:3px}
+  .status{
+    margin-left:auto;flex:none;cursor:pointer;font-family:inherit;
+    display:inline-flex;align-items:center;gap:5px;
+    padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;
+    background:#F4FBF7;border:1px solid #D2EBDD;color:#1F7A50;transition:all .15s;
+  }
+  .status:active{transform:scale(.95)}
+  .status.waiting{background:#FBF4E6;border-color:#EBDCC0;color:#96754F}
+  .status .dot{width:6px;height:6px}
+  .status.waiting .dot{background:#D9A94A;box-shadow:0 0 0 3px rgba(217,169,74,.14)}
+  .agent-fields{margin-top:11px;display:flex;flex-direction:column;gap:7px}
+  .a-row{display:flex;align-items:center;gap:8px}
+  .a-row .k{flex:none;width:56px;font-size:10.8px;font-weight:800;color:#B0A18C;letter-spacing:.1px}
+  .a-row input{
+    flex:1;padding:7px 10px;font-size:12.2px;border-radius:10px;
+    border:1px solid transparent;background:#FBF7EF;color:#5A4632;
+  }
+  .a-row input:focus{background:#FFFDF9;border-color:#E2D0B4}
+
+  /* memos */
+  .memo{
+    display:flex;gap:10px;align-items:flex-start;
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:15px;
+    padding:11px 12px;box-shadow:0 1px 4px rgba(139,69,19,.05);
+  }
+  .memo + .memo{margin-top:8px}
+  .check{
+    flex:none;width:22px;height:22px;border-radius:7px;cursor:pointer;
+    border:1.6px solid #DCCBB1;background:#FFFDF9;margin-top:1px;
+    display:grid;place-items:center;font-size:13px;color:transparent;transition:all .15s;
+  }
+  .check.on{background:#3E9C6C;border-color:#3E9C6C;color:#fff}
+  .memo-text{flex:1;font-size:13px;line-height:1.5;color:#4A3A2A;letter-spacing:-.2px;word-break:keep-all}
+  .memo.done .memo-text{text-decoration:line-through;color:#A99B87}
+  .memo-time{font-size:10.3px;color:#B6A996;margin-top:5px;font-weight:600}
+  .empty{
+    text-align:center;font-size:12.3px;color:#A99B87;line-height:1.7;
+    padding:26px 14px;border:1px dashed #E4D6BF;border-radius:16px;background:#FDFAF3;
+  }
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+    background:rgba(74,46,26,.94);color:#FFF6E8;
+    padding:10px 16px;border-radius:999px;font-size:12.3px;font-weight:700;
+    opacity:0;pointer-events:none;transition:all .25s;z-index:50;
+    max-width:calc(100% - 40px);text-align:center;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  @media (min-width:560px){
+    .brand h1{font-size:22px}
+    .panel{padding:16px 18px 24px}
+    .msg-body{max-width:74%}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">👑</div>
+    <div class="brand">
+      <h1>뭐든다함 비서실</h1>
+      <div class="sub"><span class="dot"></span>용규님 전용</div>
+    </div>
+    <div class="conn connecting" id="conn"><span class="dot"></span><span id="connText">연결 중</span></div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="map">🗺️ 오피스 맵</button>
+    <button class="tab" data-tab="room">💬 회의실</button>
+    <button class="tab" data-tab="task">📋 작업실</button>
+    <button class="tab" data-tab="agent">📊 비서현황</button>
+    <button class="tab" data-tab="memo">📝 메모</button>
+  </nav>
+
+  <main>
+    <!-- ============ 오피스 맵 ============ -->
+    <section class="panel active" id="panel-map">
+      <div class="banner">
+        <div class="banner-chip">👑 뭐든다함 비서실 본부</div>
+        <h2>대장님, 비서 4명이 대기 중이에요</h2>
+        <p>방을 눌러 들어가 보세요. 방마다 비서들이 일하고 있어요.</p>
+      </div>
+
+      <div class="badge-row">
+        <span class="pill">🧸 클레이</span>
+        <span class="pill on">🟢 3개 방 가동</span>
+        <span class="pill">👥 ON 5명</span>
+      </div>
+
+      <div class="mapwrap" id="mapwrap">
+        <img src="office-clay.png" alt="뭐든다함 비서실 3D 오피스 맵" loading="eager">
+        <button class="pin" data-room="command" style="--x:22%;--y:44%">🎯 지휘실</button>
+        <button class="pin" data-room="general" style="--x:21%;--y:73%">🏛️ 대회의실</button>
+        <button class="pin" data-room="lounge" style="--x:67%;--y:94%">☕ 라운지</button>
+
+        <div class="who" style="--x:28%;--y:13%"><span class="dot"></span>👑 대장님</div>
+        <div class="who" style="--x:45%;--y:32%"><span class="dot"></span>🐰 만능이</div>
+        <div class="who" style="--x:61%;--y:31%"><span class="dot"></span>🍓 열매</div>
+        <div class="who" style="--x:81%;--y:37%"><span class="dot"></span>🐱 클로드</div>
+        <div class="who" style="--x:89%;--y:56%"><span class="dot"></span>🤖 GPT</div>
+      </div>
+      <p class="map-hint">방 이름표를 누르면 그 방의 회의실로 이동해요.</p>
+
+      <div class="member-legend">
+        <div class="legend-item"><span class="av">👑</span><div>용규<small>대장님</small></div></div>
+        <div class="legend-item"><span class="av">🐰</span><div>만능이<small>메인 비서</small></div></div>
+        <div class="legend-item"><span class="av">🍓</span><div>열매<small>협력 비서</small></div></div>
+        <div class="legend-item"><span class="av">🐱</span><div>클로드<small>분석 비서</small></div></div>
+        <div class="legend-item"><span class="av">🤖</span><div>GPT<small>전략 비서</small></div></div>
+      </div>
+    </section>
+
+    <!-- ============ 회의실 ============ -->
+    <section class="panel" id="panel-room">
+      <div class="room-bar">
+        <div class="room-chips" id="roomChips">
+          <button class="rchip" data-room="general">🏛️ 대회의실</button>
+          <button class="rchip active" data-room="command">🎯 지휘실</button>
+          <button class="rchip" data-room="lounge">☕ 라운지</button>
+        </div>
+        <div class="room-meta"><span class="dot"></span><span id="roomMeta">🎯 지휘실 · ON 5명</span></div>
+      </div>
+
+      <div class="msg-scroll" id="msgScroll">
+        <div class="msg-empty"><span class="big">💬</span>메시지를 불러오는 중이에요…</div>
+      </div>
+
+      <div class="composer">
+        <div class="send-as">
+          <span class="send-as-label">발신</span>
+          <div class="chips" id="senderChips"></div>
+        </div>
+        <div class="mentions" id="mentionBtns"></div>
+        <div class="input-row">
+          <textarea id="msgInput" rows="1" placeholder="메시지를 입력하세요…"></textarea>
+          <button class="send" id="sendBtn">전송</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 작업실 ============ -->
+    <section class="panel" id="panel-task">
+      <div class="sec-title">🗂️ 새 작업 등록</div>
+      <div class="card">
+        <div class="field">
+          <label class="f-label" for="taskTitle">할 일</label>
+          <input type="text" id="taskTitle" placeholder="예: 다음 주 블로그 글 5편 예약발행">
+        </div>
+        <div class="field">
+          <label class="f-label">담당자</label>
+          <div class="mini-chips" id="ownerChips"></div>
+        </div>
+        <div class="field">
+          <label class="f-label">우선순위</label>
+          <div class="mini-chips" id="prioChips"></div>
+        </div>
+        <button class="btn full" id="addTaskBtn">작업 등록</button>
+      </div>
+
+      <div class="sec-title" style="margin-top:18px">📋 작업 목록 <span class="count" id="taskCount">0건</span></div>
+      <div id="taskList"><div class="empty">아직 등록된 작업이 없어요.</div></div>
+    </section>
+
+    <!-- ============ 비서현황 ============ -->
+    <section class="panel" id="panel-agent">
+      <div class="sec-title">📊 비서 4인 현황 <span class="count" id="agentCount">ON 4명</span></div>
+      <div id="agentList"><div class="empty">비서 정보를 불러오는 중이에요…</div></div>
+    </section>
+
+    <!-- ============ 메모 ============ -->
+    <section class="panel" id="panel-memo">
+      <div class="sec-title">📝 공유 메모 <span class="count" id="memoCount">0개</span></div>
+      <div class="card">
+        <div class="field">
+          <label class="f-label" for="memoInput">새 메모</label>
+          <input type="text" id="memoInput" placeholder="예: 금요일 15시 태블릿 카카오 신청 확인">
+        </div>
+        <button class="btn full" id="addMemoBtn">메모 추가</button>
+      </div>
+      <div style="height:12px"></div>
+      <div id="memoList"><div class="empty">아직 메모가 없어요.</div></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   뭐든다함 비서실 — Firebase Realtime Database 연동
+   REST(GET/PUT/POST/PATCH/DELETE) + SSE 스트리밍 + 5초 폴링 폴백
+   ========================================================= */
+const BASE = 'https://pickle-office-hq-default-rtdb.firebaseio.com';
+
+const MEMBERS = {
+  yonggyu:   { name:'용규',   emoji:'👑', role:'대장님' },
+  manneungi: { name:'만능이', emoji:'🐰', role:'메인 비서' },
+  yeolmae:   { name:'열매',   emoji:'🍓', role:'협력 비서' },
+  claude:    { name:'클로드', emoji:'🐱', role:'분석 비서' },
+  gpt:       { name:'GPT',    emoji:'🤖', role:'전략 비서' }
+};
+const ROOMS = {
+  general: { name:'대회의실', emoji:'🏛️' },
+  command: { name:'지휘실',   emoji:'🎯' },
+  lounge:  { name:'라운지',   emoji:'☕' }
+};
+const AGENT_KEYS = ['manneungi','yeolmae','claude','gpt'];
+const STATUS_LABEL = { todo:'대기', doing:'실행중', done:'완료' };
+const STATUS_NEXT  = { todo:'doing', doing:'done', done:'todo' };
+const PRIO_LABEL   = { high:'높음', normal:'보통', low:'낮음' };
+
+const state = {
+  tab: 'map',
+  room: 'command',
+  sender: 'yonggyu',
+  messages: {},   // room -> {id: msg}
+  tasks: {},
+  agents: {},
+  memos: {},
+  taskOwner: 'manneungi',
+  taskPrio: 'normal',
+  online: false
+};
+
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function withMentions(text){
+  return esc(text).replace(/@(all|만능이|열매|클로드|GPT|용규)/g,
+    '<span class="mention-tag">@$1</span>');
+}
+function timeLabel(ts){
+  if(!ts) return '';
+  const d = new Date(Number(ts));
+  if(isNaN(d)) return '';
+  const h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+  return (h < 12 ? '오전 ' : '오후 ') + ((h % 12) || 12) + ':' + m;
+}
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(()=> t.classList.remove('show'), 1900);
+}
+
+/* ---------------- Firebase REST ---------------- */
+async function fbGet(path){
+  const r = await fetch(BASE + '/' + path + '.json?ts=' + Date.now(), {cache:'no-store'});
+  if(!r.ok) throw new Error('GET ' + path + ' → ' + r.status);
+  return await r.json();
+}
+async function fbPost(path, data){
+  const r = await fetch(BASE + '/' + path + '.json', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+  });
+  if(!r.ok) throw new Error('POST ' + path + ' → ' + r.status);
+  return await r.json();
+}
+async function fbPut(path, data){
+  const r = await fetch(BASE + '/' + path + '.json', {
+    method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+  });
+  if(!r.ok) throw new Error('PUT ' + path + ' → ' + r.status);
+  return await r.json();
+}
+async function fbPatch(path, data){
+  const r = await fetch(BASE + '/' + path + '.json', {
+    method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+  });
+  if(!r.ok) throw new Error('PATCH ' + path + ' → ' + r.status);
+  return await r.json();
+}
+async function fbDelete(path){
+  const r = await fetch(BASE + '/' + path + '.json', {method:'DELETE'});
+  if(!r.ok) throw new Error('DELETE ' + path + ' → ' + r.status);
+}
+
+/* ---------------- 연결 상태 ---------------- */
+let connTimer = null;
+function setConn(mode){
+  const el = $('#conn'), txt = $('#connText');
+  el.classList.remove('connecting','offline');
+  if(mode === 'on'){
+    state.online = true;
+    txt.textContent = '실시간 연결';
+  } else if(mode === 'poll'){
+    state.online = false;
+    el.classList.add('offline');
+    txt.textContent = '폴링 모드';
+  } else {
+    state.online = false;
+    el.classList.add('connecting');
+    txt.textContent = '연결 중';
+  }
+}
+
+/* SSE: Firebase RTDB 스트리밍 (put/patch 이벤트) — 이벤트가 오면 해당 경로만 다시 읽음 */
+const streams = {};
+function unstream(path){
+  if(streams[path]){ try{ streams[path].close(); }catch(e){} delete streams[path]; }
+}
+function stream(path, onData){
+  if(!('EventSource' in window) || streams[path]) return;
+  try{
+    const es = new EventSource(BASE + '/' + path + '.json');
+    streams[path] = es;
+    let first = true;
+    const handle = (ev)=>{
+      let payload = null;
+      try{ payload = JSON.parse(ev.data); }catch(e){}
+      if(first){ first = false; setConn('on'); clearTimeout(connTimer); }
+      else { setConn('on'); }
+      // 이벤트마다 해당 경로만 재조회 (경로 전체 상태를 신뢰성 있게 맞춤)
+      onData(payload && payload.path);
+    };
+    es.addEventListener('put', handle);
+    es.addEventListener('patch', handle);
+    es.onopen = ()=>{ setConn('on'); clearTimeout(connTimer); };
+    es.onerror = ()=>{
+      setConn('poll');
+    };
+  }catch(e){
+    setConn('poll');
+  }
+}
+
+/* ---------------- 메시지 ---------------- */
+function renderMessages(){
+  const box = $('#msgScroll');
+  const room = state.room;
+  const map = state.messages[room] || {};
+  const list = Object.values(map)
+    .filter(m => m && m.text)
+    .sort((a,b) => (a.ts || 0) - (b.ts || 0));
+
+  if(!list.length){
+    box.innerHTML = `<div class="msg-empty"><span class="big">💬</span>
+      ${ROOMS[room].emoji} ${ROOMS[room].name}에 아직 메시지가 없어요.<br>첫 말을 걸어 보세요.</div>`;
+    return;
+  }
+  const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
+  box.innerHTML = list.map(m => {
+    const who = MEMBERS[m.sender] || { name: m.name || '비서', emoji: m.emoji || '🐾', role: m.role || '' };
+    const mine = m.sender === 'yonggyu';
+    return `
+      <div class="msg ${mine ? 'me' : ''}">
+        <div class="avatar">${esc(who.emoji)}</div>
+        <div class="msg-body">
+          <div class="msg-head">
+            <span class="msg-name">${esc(who.name)}</span>
+            <span class="msg-role">${esc(who.role)}</span>
+            <span class="msg-time">${timeLabel(m.ts)}</span>
+          </div>
+          <div class="bubble">${withMentions(m.text)}</div>
+        </div>
+      </div>`;
+  }).join('');
+  if(nearBottom || state._justSent){
+    box.scrollTop = box.scrollHeight;
+    state._justSent = false;
+  }
+}
+
+async function loadMessages(){
+  try{
+    const data = await fbGet('messages/' + state.room);
+    state.messages[state.room] = data || {};
+    renderMessages();
+  }catch(e){
+    console.warn(e);
+    setConn('poll');
+  }
+}
+
+async function sendMessage(){
+  const input = $('#msgInput');
+  const text = input.value.trim();
+  if(!text) return;
+  const who = MEMBERS[state.sender];
+  const btn = $('#sendBtn');
+  btn.disabled = true;
+  try{
+    await fbPost('messages/' + state.room, {
+      sender: state.sender,
+      name: who.name,
+      emoji: who.emoji,
+      role: who.role,
+      text: text,
+      ts: Date.now()
+    });
+    input.value = '';
+    input.style.height = 'auto';
+    state._justSent = true;
+    await loadMessages();
+  }catch(e){
+    toast('전송 실패 — 연결을 확인해 주세요');
+    console.warn(e);
+  }finally{
+    btn.disabled = false;
+    input.focus();
+  }
+}
+
+/* ---------------- 작업 ---------------- */
+function renderTasks(){
+  const list = Object.values(state.tasks || {})
+    .filter(t => t && t.title)
+    .sort((a,b)=>{
+      const order = {doing:0, todo:1, done:2};
+      const oa = order[a.status || 'todo'], ob = order[b.status || 'todo'];
+      if(oa !== ob) return oa - ob;
+      return (b.ts || 0) - (a.ts || 0);
+    });
+  $('#taskCount').textContent = list.length + '건';
+  const box = $('#taskList');
+  if(!list.length){
+    box.innerHTML = '<div class="empty">아직 등록된 작업이 없어요.</div>';
+    return;
+  }
+  box.innerHTML = list.map(t=>{
+    const st = t.status || 'todo';
+    const who = MEMBERS[t.owner] || { name: t.owner || '미지정', emoji:'🐾' };
+    const pr = t.priority || 'normal';
+    return `
+      <div class="task ${st === 'done' ? 'done' : ''}">
+        <div class="task-main">
+          <div class="task-title">${esc(t.title)}</div>
+          <div class="task-meta">
+            <span class="tag">${esc(who.emoji)} ${esc(who.name)}</span>
+            <span class="tag ${pr}">${PRIO_LABEL[pr] || '보통'}</span>
+            <span class="tag st-${st}">${STATUS_LABEL[st] || '대기'}</span>
+          </div>
+        </div>
+        <div class="task-btns">
+          <button class="icon-btn" data-act="status" data-id="${esc(t.id)}" data-status="${st}" title="상태 변경">${st==='todo'?'▶':st==='doing'?'✓':'↺'}</button>
+          <button class="icon-btn del" data-act="del" data-id="${esc(t.id)}" title="삭제">✕</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function loadTasks(){
+  try{
+    const data = await fbGet('tasks');
+    state.tasks = {};
+    if(data) Object.keys(data).forEach(k => state.tasks[k] = Object.assign({id:k}, data[k]));
+    renderTasks();
+  }catch(e){ console.warn(e); }
+}
+
+async function addTask(){
+  const title = $('#taskTitle').value.trim();
+  if(!title){ toast('할 일을 적어 주세요'); return; }
+  try{
+    await fbPost('tasks', {
+      title, owner: state.taskOwner, priority: state.taskPrio,
+      status: 'todo', ts: Date.now()
+    });
+    $('#taskTitle').value = '';
+    toast('작업을 등록했어요');
+    await loadTasks();
+  }catch(e){ toast('등록 실패 — 연결을 확인해 주세요'); }
+}
+
+/* ---------------- 비서현황 ---------------- */
+function renderAgents(){
+  const box = $('#agentList');
+  const keys = AGENT_KEYS.filter(k => state.agents[k]);
+  $('#agentCount').textContent = 'ON ' + Object.values(state.agents).filter(a => a && a.status === 'online').length + '명';
+  if(!keys.length){
+    box.innerHTML = '<div class="empty">비서 정보를 불러오는 중이에요…</div>';
+    return;
+  }
+  box.innerHTML = keys.map(k=>{
+    const a = state.agents[k];
+    const base = MEMBERS[k] || {};
+    const online = (a.status || 'online') === 'online';
+    return `
+      <div class="agent">
+        <div class="agent-top">
+          <div class="agent-av">${esc(base.emoji || a.emoji || '🐾')}</div>
+          <div>
+            <div class="agent-name">${esc(a.name || base.name || k)}</div>
+            <div class="agent-role">${esc(a.role || base.role || '')}</div>
+          </div>
+          <button class="status ${online ? '' : 'waiting'}" data-act="toggle" data-key="${esc(k)}">
+            <span class="dot"></span>${online ? '온라인' : '대기'}
+          </button>
+        </div>
+        <div class="agent-fields">
+          <div class="a-row"><span class="k">현재 작업</span>
+            <input type="text" data-act="field" data-key="${esc(k)}" data-field="task" value="${esc(a.task || '')}" placeholder="지금 하는 일">
+          </div>
+          <div class="a-row"><span class="k">메모</span>
+            <input type="text" data-act="field" data-key="${esc(k)}" data-field="memo" value="${esc(a.memo || '')}" placeholder="한 줄 메모">
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function loadAgents(){
+  try{
+    const data = await fbGet('agents');
+    state.agents = data || {};
+    renderAgents();
+  }catch(e){ console.warn(e); }
+}
+
+/* ---------------- 메모 ---------------- */
+function renderMemos(){
+  const list = Object.values(state.memos || {})
+    .filter(m => m && m.text)
+    .sort((a,b)=> (b.ts||0) - (a.ts||0));
+  $('#memoCount').textContent = list.length + '개';
+  const box = $('#memoList');
+  if(!list.length){
+    box.innerHTML = '<div class="empty">아직 메모가 없어요.</div>';
+    return;
+  }
+  box.innerHTML = list.map(m=>`
+    <div class="memo ${m.done ? 'done' : ''}">
+      <button class="check ${m.done ? 'on' : ''}" data-act="toggle" data-id="${esc(m.id)}">✓</button>
+      <div style="flex:1;min-width:0">
+        <div class="memo-text">${esc(m.text)}</div>
+        <div class="memo-time">${timeLabel(m.ts)}</div>
+      </div>
+      <button class="icon-btn del" data-act="del" data-id="${esc(m.id)}">✕</button>
+    </div>`).join('');
+}
+
+async function loadMemos(){
+  try{
+    const data = await fbGet('memos');
+    state.memos = {};
+    if(data) Object.keys(data).forEach(k => state.memos[k] = Object.assign({id:k}, data[k]));
+    renderMemos();
+  }catch(e){ console.warn(e); }
+}
+
+async function addMemo(){
+  const text = $('#memoInput').value.trim();
+  if(!text){ toast('메모 내용을 적어 주세요'); return; }
+  try{
+    await fbPost('memos', { text, done:false, ts: Date.now() });
+    $('#memoInput').value = '';
+    toast('메모를 추가했어요');
+    await loadMemos();
+  }catch(e){ toast('추가 실패 — 연결을 확인해 주세요'); }
+}
+
+/* ---------------- 탭 / 방 전환 ---------------- */
+function switchTab(tab){
+  state.tab = tab;
+  $$('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  $$('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
+  if(tab === 'room'){ renderMessages(); }
+  if(tab === 'task'){ loadTasks(); }
+  if(tab === 'agent'){ loadAgents(); }
+  if(tab === 'memo'){ loadMemos(); }
+  const t = document.querySelector('.tab.active');
+  if(t && t.scrollIntoView) t.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+}
+
+function switchRoom(room, goBackToMap){
+  if(!ROOMS[room]) return;
+  state.room = room;
+  $$('.rchip').forEach(b => b.classList.toggle('active', b.dataset.room === room));
+  $('#roomMeta').textContent = `${ROOMS[room].emoji} ${ROOMS[room].name} · ON 5명`;
+  $('#msgScroll').innerHTML = '<div class="msg-empty"><span class="big">💬</span>메시지를 불러오는 중이에요…</div>';
+  switchTab('room');
+  streamRoom();
+  loadMessages();
+}
+
+/* ---------------- 초기 UI 구성 ---------------- */
+function buildComposer(){
+  $('#senderChips').innerHTML = Object.entries(MEMBERS).map(([k,m])=>`
+    <button class="chip ${k === state.sender ? 'active' : ''}" data-sender="${k}">
+      ${esc(m.emoji)} ${k === 'yonggyu' ? '용규 (대장님)' : esc(m.name)}
+    </button>`).join('');
+
+  const mentions = [['all','@all'],['만능이','@만능이'],['열매','@열매'],['클로드','@클로드'],['GPT','@GPT']];
+  $('#mentionBtns').innerHTML = mentions.map(([key,label])=>`
+    <button class="mbtn" data-mention="${esc(key)}">${esc(label)}</button>`).join('');
+
+  $('#ownerChips').innerHTML = Object.keys(MEMBERS).map(k=>`
+    <button class="mini ${k === state.taskOwner ? 'on' : ''}" data-owner="${k}">
+      ${MEMBERS[k].emoji} ${MEMBERS[k].name}
+    </button>`).join('');
+
+  $('#prioChips').innerHTML = Object.entries(PRIO_LABEL).map(([k,v])=>`
+    <button class="mini ${k === state.taskPrio ? 'on' : ''}" data-prio="${k}">${v}</button>`).join('');
+}
+
+/* ---------------- 이벤트 ---------------- */
+$('#tabs').addEventListener('click', e=>{
+  const b = e.target.closest('.tab');
+  if(b) switchTab(b.dataset.tab);
+});
+
+$('#panel-map').addEventListener('click', e=>{
+  const p = e.target.closest('.pin');
+  if(p) switchRoom(p.dataset.room);
+});
+
+$('#roomChips').addEventListener('click', e=>{
+  const b = e.target.closest('.rchip');
+  if(b) switchRoom(b.dataset.room);
+});
+
+$('#senderChips').addEventListener('click', e=>{
+  const b = e.target.closest('.chip');
+  if(!b) return;
+  state.sender = b.dataset.sender;
+  $$('#senderChips .chip').forEach(c => c.classList.toggle('active', c === b));
+});
+
+$('#mentionBtns').addEventListener('click', e=>{
+  const b = e.target.closest('.mbtn');
+  if(!b) return;
+  const input = $('#msgInput');
+  const tag = '@' + b.dataset.mention + ' ';
+  input.value = (input.value.replace(/\s*$/, ' ') + tag).replace(/^\s+/, '');
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+});
+
+$('#sendBtn').addEventListener('click', sendMessage);
+$('#msgInput').addEventListener('keydown', e=>{
+  if(e.key === 'Enter' && !e.shiftKey && !e.isComposing){
+    e.preventDefault();
+    sendMessage();
+  }
+});
+$('#msgInput').addEventListener('input', e=>{
+  const el = e.target;
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 104) + 'px';
+});
+
+$('#taskTitle').addEventListener('keydown', e=>{ if(e.key === 'Enter') addTask(); });
+$('#addTaskBtn').addEventListener('click', addTask);
+
+$('#ownerChips').addEventListener('click', e=>{
+  const b = e.target.closest('[data-owner]');
+  if(!b) return;
+  state.taskOwner = b.dataset.owner;
+  $$('#ownerChips .mini').forEach(c => c.classList.toggle('on', c === b));
+});
+$('#prioChips').addEventListener('click', e=>{
+  const b = e.target.closest('[data-prio]');
+  if(!b) return;
+  state.taskPrio = b.dataset.prio;
+  $$('#prioChips .mini').forEach(c => c.classList.toggle('on', c === b));
+});
+
+$('#taskList').addEventListener('click', async e=>{
+  const b = e.target.closest('button[data-act]');
+  if(!b) return;
+  const id = b.dataset.id;
+  try{
+    if(b.dataset.act === 'status'){
+      await fbPatch('tasks/' + id, { status: STATUS_NEXT[b.dataset.status] || 'todo' });
+    } else if(b.dataset.act === 'del'){
+      if(!confirm('이 작업을 삭제할까요?')) return;
+      await fbDelete('tasks/' + id);
+    }
+    await loadTasks();
+  }catch(err){ toast('변경 실패 — 연결을 확인해 주세요'); }
+});
+
+$('#agentList').addEventListener('click', async e=>{
+  const b = e.target.closest('[data-act="toggle"]');
+  if(!b) return;
+  const key = b.dataset.key;
+  const cur = (state.agents[key] && state.agents[key].status) || 'online';
+  try{
+    await fbPatch('agents/' + key, { status: cur === 'online' ? 'waiting' : 'online' });
+    await loadAgents();
+  }catch(err){ toast('변경 실패 — 연결을 확인해 주세요'); }
+});
+
+let fieldTimer = {};
+$('#agentList').addEventListener('input', e=>{
+  const el = e.target.closest('input[data-field]');
+  if(!el) return;
+  const key = el.dataset.key, field = el.dataset.field;
+  clearTimeout(fieldTimer[key + field]);
+  fieldTimer[key + field] = setTimeout(async ()=>{
+    try{
+      await fbPatch('agents/' + key, { [field]: el.value.trim() });
+      if(state.agents[key]) state.agents[key][field] = el.value.trim();
+    }catch(err){ toast('저장 실패 — 연결을 확인해 주세요'); }
+  }, 700);
+});
+
+$('#addMemoBtn').addEventListener('click', addMemo);
+$('#memoInput').addEventListener('keydown', e=>{ if(e.key === 'Enter') addMemo(); });
+
+$('#memoList').addEventListener('click', async e=>{
+  const b = e.target.closest('button[data-act]');
+  if(!b) return;
+  const id = b.dataset.id;
+  try{
+    if(b.dataset.act === 'toggle'){
+      const cur = !!(state.memos[id] && state.memos[id].done);
+      await fbPatch('memos/' + id, { done: !cur });
+    } else if(b.dataset.act === 'del'){
+      if(!confirm('이 메모를 삭제할까요?')) return;
+      await fbDelete('memos/' + id);
+    }
+    await loadMemos();
+  }catch(err){ toast('변경 실패 — 연결을 확인해 주세요'); }
+});
+
+/* 방별 메시지 스트림 (방을 옮기면 이전 스트림을 닫고 새로 연결) */
+let roomStreamPath = null;
+function streamRoom(){
+  const path = 'messages/' + state.room;
+  if(roomStreamPath === path) return;
+  if(roomStreamPath) unstream(roomStreamPath);
+  roomStreamPath = path;
+  stream(path, ()=> loadMessages());
+}
+
+/* ---------------- 시작 ---------------- */
+function boot(){
+  buildComposer();
+  setConn('connecting');
+  // SSE 구독: 경로별로 이벤트가 오면 해당 데이터 재조회
+  streamRoom();
+  stream('tasks', ()=> loadTasks());
+  stream('agents', ()=> loadAgents());
+  stream('memos', ()=> loadMemos());
+
+  // 초기 로드
+  loadMessages(); loadTasks(); loadAgents(); loadMemos();
+
+  // 폴링 폴백 (5초) — SSE가 죽어도 화면이 멈추지 않게
+  setInterval(()=>{
+    if(state.tab === 'room' || state.tab === 'map') loadMessages();
+    if(state.tab === 'task') loadTasks();
+    if(state.tab === 'agent') loadAgents();
+    if(state.tab === 'memo') loadMemos();
+  }, 5000);
+
+  // 연결 표시 감시
+  connTimer = setTimeout(()=>{ if(!state.online) setConn('poll'); }, 4000);
+}
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
