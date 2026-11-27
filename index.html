@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>뭐든다함 비서실</title>
-<meta name="description" content="용규님 전용 뭐든다함 비서실 — 오피스 맵, 회의실, 작업실, 비서현황, 메모">
+<meta name="description" content="대장님 전용 뭐든다함 비서실 — 오피스 맵, 회의실, 작업실, 비서현황, 메모">
 <meta name="theme-color" content="#F7F1E5">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
@@ -458,6 +458,88 @@
     .panel{padding:16px 18px 24px}
     .msg-body{max-width:74%}
   }
+  /* ================= 로그인 잠금 ================= */
+  body.locked #app{display:none}
+  .lock{
+    position:fixed;inset:0;z-index:100;display:none;
+    flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:26px 18px calc(26px + env(safe-area-inset-bottom));
+    overflow-y:auto;
+    background:radial-gradient(120% 80% at 50% -10%, #FFF9EF 0%, #F7F1E5 45%, #F1E8D8 100%);
+  }
+  body.locked .lock{display:flex}
+  .lock-card{
+    width:100%;max-width:372px;margin:auto;
+    padding:30px 24px 24px;text-align:center;
+    background:linear-gradient(180deg,#FFFDF8,#FBF2E2);
+    border:1px solid #EADCC3;border-radius:26px;
+    box-shadow:0 18px 46px rgba(139,69,19,.14), inset 0 1px 0 rgba(255,255,255,.85);
+  }
+  .lock-badge{
+    width:72px;height:72px;margin:0 auto 14px;border-radius:24px;
+    display:grid;place-items:center;font-size:34px;
+    background:radial-gradient(circle at 32% 28%,#FFF6DF,#FFE7B8 60%,#F6D69A 100%);
+    border:1px solid #F0D9A9;
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.9), 0 6px 16px rgba(200,150,70,.24);
+  }
+  .lock-title{margin:0;font-size:22px;font-weight:800;letter-spacing:-.7px;color:#3F2814}
+  .lock-sub{margin:8px 0 0;font-size:12.8px;font-weight:600;color:#8A7860;letter-spacing:-.2px}
+  .lock-body{margin-top:22px}
+  .lock-loading{display:none;padding:26px 0 8px;font-size:12.3px;font-weight:700;color:#A2917C}
+  body.checking .lock-loading{display:block}
+  body.checking .lock-body{display:none}
+  .lock-google{
+    width:100%;cursor:pointer;font-family:inherit;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    padding:14px 16px;border-radius:15px;
+    background:#FFFDF9;border:1px solid #E2D2B8;
+    font-size:13.5px;font-weight:800;color:#4A3A2A;letter-spacing:-.2px;
+    box-shadow:0 3px 10px rgba(139,69,19,.07);
+    transition:transform .12s, box-shadow .16s, opacity .16s;
+  }
+  .lock-google:active{transform:scale(.98)}
+  .lock-google[disabled]{opacity:.6;cursor:default}
+  .lock-google svg{width:18px;height:18px;flex:none}
+  .lock-or{display:flex;align-items:center;gap:10px;margin:16px 0 10px;color:#B6A996;font-size:11.5px;font-weight:700}
+  .lock-or::before,.lock-or::after{content:"";flex:1;height:1px;background:#EADCC3}
+  .lock-toggle{
+    width:100%;cursor:pointer;font-family:inherit;background:none;border:0;
+    padding:8px;font-size:12.3px;font-weight:700;color:#8B6B48;letter-spacing:-.2px;
+  }
+  .lock-toggle:active{opacity:.7}
+  .lock-form{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+  .lock-form input{
+    width:100%;font-family:inherit;font-size:13px;color:#4A3A2A;
+    padding:12px 14px;border-radius:13px;border:1px solid var(--line);
+    background:#FFFDF9;outline:none;letter-spacing:-.2px;
+    transition:border-color .16s, box-shadow .16s;
+  }
+  .lock-form input::placeholder{color:#BBAE9A}
+  .lock-form input:focus{border-color:#D9BE9B;box-shadow:0 0 0 3px rgba(217,190,155,.26)}
+  .lock-submit{
+    cursor:pointer;font-family:inherit;border:0;border-radius:13px;margin-top:2px;
+    padding:13px 16px;font-size:13.2px;font-weight:800;letter-spacing:-.2px;
+    background:linear-gradient(160deg,#A75C28,#7B3E13);color:#FFF9EE;
+    box-shadow:0 4px 12px rgba(139,69,19,.22);transition:transform .12s,opacity .16s;
+  }
+  .lock-submit:active{transform:scale(.98)}
+  .lock-submit[disabled]{opacity:.6;cursor:default}
+  .lock-note{margin:14px 0 0;font-size:11.8px;line-height:1.55;color:#A2502F;font-weight:600}
+  .lock-note:empty{display:none}
+  .deny-icon{font-size:28px;margin:4px 0 2px}
+  .deny-title{margin:8px 0 4px;font-size:14.5px;font-weight:800;color:#7B3E13;letter-spacing:-.3px}
+  .deny-desc{margin:0 0 18px;font-size:11.8px;line-height:1.5;color:#9A8C79;font-weight:600;word-break:break-all}
+  .lock-foot{margin:16px 0 0;text-align:center;font-size:11px;font-weight:700;color:#B6A996;letter-spacing:-.1px}
+  .logout{
+    flex:none;cursor:pointer;font-family:inherit;
+    padding:7px 10px;border-radius:999px;
+    background:#FFFDF9;border:1px solid var(--line);
+    color:#8B7355;font-size:11.5px;font-weight:800;letter-spacing:-.2px;
+    transition:transform .12s, background .15s;
+  }
+  .logout:active{transform:scale(.95)}
+
   /* 좁은 폰 화면: 지도 위 이름표가 겹치지 않게 조금씩 줄인다 */
   @media (max-width:420px){
     .pin{padding:6px 9px;font-size:11px;gap:3px}
@@ -466,18 +548,57 @@
     .banner h2{font-size:19px}
     .banner{padding:14px}
     .tab{font-size:12px;padding:8px 10px}
+    header{padding:12px 10px 10px;gap:8px}
+    .logo{width:40px;height:40px;border-radius:14px;font-size:21px}
+    .brand h1{font-size:18px}
+    .conn{padding:6px 8px;font-size:11px;gap:4px}
+    .logout{padding:6px 8px;font-size:11px}
   }
 </style>
 </head>
-<body>
+<body class="locked checking">
+<div class="lock" id="lock">
+  <div class="lock-card">
+    <div class="lock-badge">👑</div>
+    <h1 class="lock-title">뭐든다함 비서실</h1>
+    <p class="lock-sub">승인된 계정만 입장할 수 있어요</p>
+
+    <div class="lock-loading">잠금을 확인하는 중이에요…</div>
+
+    <div class="lock-body" id="lockSignIn">
+      <button class="lock-google" id="googleBtn" type="button">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Google 계정으로 로그인
+      </button>
+      <div class="lock-or"><span>또는</span></div>
+      <button class="lock-toggle" id="emailToggle" type="button" aria-expanded="false" aria-controls="emailForm">이메일/비밀번호 로그인 <span id="emailCaret">▾</span></button>
+      <form class="lock-form" id="emailForm" hidden>
+        <input type="email" id="loginEmail" name="email" placeholder="이메일" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false">
+        <input type="password" id="loginPw" name="password" placeholder="비밀번호" autocomplete="current-password">
+        <button class="lock-submit" id="emailSubmit" type="submit">로그인</button>
+      </form>
+      <p class="lock-note" id="lockMsg" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="lock-body" id="lockDenied" hidden>
+      <div class="deny-icon">🔒</div>
+      <p class="deny-title">접근 권한이 없는 계정이에요</p>
+      <p class="deny-desc" id="denyEmail"></p>
+      <button class="lock-google" id="denyLogout" type="button">다른 계정으로 로그인</button>
+    </div>
+  </div>
+  <p class="lock-foot">👑 뭐든다함 비서실 · 승인된 계정만</p>
+</div>
+
 <div id="app">
   <header>
     <div class="logo">👑</div>
     <div class="brand">
       <h1>뭐든다함 비서실</h1>
-      <div class="sub"><span class="dot"></span>용규님 전용</div>
+      <div class="sub"><span class="dot"></span>대장님 전용</div>
     </div>
     <div class="conn connecting" id="conn"><span class="dot"></span><span id="connText">연결 중</span></div>
+    <button class="logout" id="logoutBtn" type="button" title="로그아웃">로그아웃</button>
   </header>
 
   <nav class="tabs" id="tabs">
@@ -518,7 +639,7 @@
       <p class="map-hint">방 이름표를 누르면 그 방의 회의실로 이동해요.</p>
 
       <div class="member-legend">
-        <div class="legend-item"><span class="av">👑</span><div>용규<small>대장님</small></div></div>
+        <div class="legend-item"><span class="av">👑</span><div>대장님<small>비서실 주인</small></div></div>
         <div class="legend-item"><span class="av">🐰</span><div>만능이<small>메인 비서</small></div></div>
         <div class="legend-item"><span class="av">🍓</span><div>열매<small>협력 비서</small></div></div>
         <div class="legend-item"><span class="av">🐱</span><div>클로드<small>분석 비서</small></div></div>
@@ -600,15 +721,40 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <script>
 /* =========================================================
-   뭐든다함 비서실 — Firebase Realtime Database 연동
+   뭐든다함 비서실 — Firebase Auth 로그인 + Realtime Database 연동
    REST(GET/PUT/POST/PATCH/DELETE) + SSE 스트리밍 + 5초 폴링 폴백
+   보안 규칙이 켜져 있어 모든 DB 요청에 ID 토큰(?auth=)이 필요하다.
    ========================================================= */
 const BASE = 'https://pickle-office-hq-default-rtdb.firebaseio.com';
 
+/* Firebase 웹 설정값(공개 정보). 비밀 키가 아니다. */
+const firebaseConfig = {
+  apiKey: "AIzaSyCcXXOVc9r4fRTJ6lAnKVJmgRU8wDQ8pHM",
+  authDomain: "pickle-office-hq.firebaseapp.com",
+  databaseURL: "https://pickle-office-hq-default-rtdb.firebaseio.com",
+  projectId: "pickle-office-hq",
+  storageBucket: "pickle-office-hq.firebasestorage.app",
+  messagingSenderId: "840652732045",
+  appId: "1:840652732045:web:0dc8a0a90a4c3879b294c4"
+};
+let fbAuth = null;
+try{
+  if(typeof firebase === 'undefined') throw new Error('Firebase SDK를 불러오지 못했습니다');
+  firebase.initializeApp(firebaseConfig);
+  fbAuth = firebase.auth();
+}catch(err){
+  console.error(err);
+}
+
+let idToken = null;      // 현재 로그인 세션의 ID 토큰
+let dbDenied = false;    // 권한 없는 계정으로 DB가 401/403을 준 상태
+
 const MEMBERS = {
-  yonggyu:   { name:'용규',   emoji:'👑', role:'대장님' },
+  yonggyu:   { name:'대장님', emoji:'👑', role:'비서실 주인' },
   manneungi: { name:'만능이', emoji:'🐰', role:'메인 비서' },
   yeolmae:   { name:'열매',   emoji:'🍓', role:'협력 비서' },
   claude:    { name:'클로드', emoji:'🐱', role:'분석 비서' },
@@ -655,7 +801,7 @@ function esc(s){
     .replace(/"/g,'&quot;');
 }
 function withMentions(text){
-  return esc(text).replace(/@(all|만능이|열매|클로드|GPT|용규)/g,
+  return esc(text).replace(/@(all|만능이|열매|클로드|GPT|대장님)/g,
     '<span class="mention-tag">@$1</span>');
 }
 function timeLabel(ts){
@@ -673,37 +819,45 @@ function toast(msg){
   t._t = setTimeout(()=> t.classList.remove('show'), 1900);
 }
 
-/* ---------------- Firebase REST ---------------- */
-async function fbGet(path){
-  const r = await fetch(BASE + '/' + path + '.json?ts=' + Date.now(), {cache:'no-store'});
-  if(!r.ok) throw new Error('GET ' + path + ' → ' + r.status);
-  return await r.json();
+/* ---------------- Firebase REST (모든 요청에 ID 토큰 동봉) ---------------- */
+function apiUrl(path, extra){
+  const p = [];
+  if(idToken) p.push('auth=' + encodeURIComponent(idToken));
+  if(extra) p.push(extra);
+  return BASE + '/' + path + '.json' + (p.length ? '?' + p.join('&') : '');
 }
-async function fbPost(path, data){
-  const r = await fetch(BASE + '/' + path + '.json', {
-    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+
+async function fbRequest(method, path, body, extra){
+  const send = ()=> fetch(apiUrl(path, extra), {
+    method,
+    cache: 'no-store',
+    headers: body === undefined ? undefined : {'Content-Type':'application/json'},
+    body: body === undefined ? undefined : JSON.stringify(body)
   });
-  if(!r.ok) throw new Error('POST ' + path + ' → ' + r.status);
-  return await r.json();
+
+  let r = await send();
+  // 토큰이 만료된 것뿐이면 한 번 새로 발급해 다시 시도
+  if(r.status === 401 && fbAuth.currentUser){
+    try{
+      idToken = await fbAuth.currentUser.getIdToken(true);
+      r = await send();
+    }catch(e){ console.warn(e); }
+  }
+  if(r.status === 401 || r.status === 403){
+    denyAccess();
+    throw new Error(method + ' ' + path + ' → ' + r.status);
+  }
+  if(!r.ok) throw new Error(method + ' ' + path + ' → ' + r.status);
+  if(method === 'DELETE') return null;
+  const text = await r.text();
+  return text ? JSON.parse(text) : null;
 }
-async function fbPut(path, data){
-  const r = await fetch(BASE + '/' + path + '.json', {
-    method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
-  });
-  if(!r.ok) throw new Error('PUT ' + path + ' → ' + r.status);
-  return await r.json();
-}
-async function fbPatch(path, data){
-  const r = await fetch(BASE + '/' + path + '.json', {
-    method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
-  });
-  if(!r.ok) throw new Error('PATCH ' + path + ' → ' + r.status);
-  return await r.json();
-}
-async function fbDelete(path){
-  const r = await fetch(BASE + '/' + path + '.json', {method:'DELETE'});
-  if(!r.ok) throw new Error('DELETE ' + path + ' → ' + r.status);
-}
+
+function fbGet(path){ return fbRequest('GET', path, undefined, 'ts=' + Date.now()); }
+function fbPost(path, data){ return fbRequest('POST', path, data); }
+function fbPut(path, data){ return fbRequest('PUT', path, data); }
+function fbPatch(path, data){ return fbRequest('PATCH', path, data); }
+function fbDelete(path){ return fbRequest('DELETE', path); }
 
 /* ---------------- 연결 상태 ---------------- */
 let connTimer = null;
@@ -730,9 +884,9 @@ function unstream(path){
   if(streams[path]){ try{ streams[path].close(); }catch(e){} delete streams[path]; }
 }
 function stream(path, onData){
-  if(!('EventSource' in window) || streams[path]) return;
+  if(!('EventSource' in window) || streams[path] || dbDenied) return;
   try{
-    const es = new EventSource(BASE + '/' + path + '.json');
+    const es = new EventSource(apiUrl(path));
     streams[path] = es;
     let first = true;
     const handle = (ev)=>{
@@ -1016,7 +1170,7 @@ function switchRoom(room, goBackToMap){
 function buildComposer(){
   $('#senderChips').innerHTML = Object.entries(MEMBERS).map(([k,m])=>`
     <button class="chip ${k === state.sender ? 'active' : ''}" data-sender="${k}">
-      ${esc(m.emoji)} ${k === 'yonggyu' ? '용규 (대장님)' : esc(m.name)}
+      ${esc(m.emoji)} ${esc(m.name)}
     </button>`).join('');
 
   const mentions = [['all','@all'],['만능이','@만능이'],['열매','@열매'],['클로드','@클로드'],['GPT','@GPT']];
@@ -1178,6 +1332,7 @@ function boot(){
 
   // 폴링 폴백 (5초) — SSE가 죽어도 화면이 멈추지 않게
   setInterval(()=>{
+    if(dbDenied) return;
     if(state.tab === 'room' || state.tab === 'map') loadMessages();
     if(state.tab === 'task') loadTasks();
     if(state.tab === 'agent') loadAgents();
@@ -1187,7 +1342,200 @@ function boot(){
   // 연결 표시 감시
   connTimer = setTimeout(()=>{ if(!state.online) setConn('poll'); }, 4000);
 }
-document.addEventListener('DOMContentLoaded', boot);
+/* ---------------- 로그인 / 잠금 화면 ---------------- */
+function clearChecking(){ document.body.classList.remove('checking'); }
+
+function showSignIn(msg){
+  document.body.classList.add('locked');
+  clearChecking();
+  $('#lockSignIn').hidden = false;
+  $('#lockDenied').hidden = true;
+  $('#lockMsg').textContent = msg || '';
+}
+
+function showDenied(){
+  document.body.classList.add('locked');
+  clearChecking();
+  $('#lockSignIn').hidden = true;
+  $('#lockDenied').hidden = false;
+  const em = fbAuth.currentUser && fbAuth.currentUser.email;
+  $('#denyEmail').textContent = em ? em + ' 계정으로는 입장할 수 없어요.' : '';
+}
+
+/* 권한 없는 계정: DB가 401/403을 준 경우 */
+function denyAccess(){
+  if(dbDenied) return;
+  dbDenied = true;
+  try{ Object.keys(streams).forEach(p => unstream(p)); }catch(e){}
+  roomStreamPath = null;
+  showDenied();
+}
+
+function emailErrorText(err){
+  const code = (err && err.code) || '';
+  if(code === 'auth/invalid-credential' || code === 'auth/wrong-password'){
+    return '이메일 또는 비밀번호가 맞지 않아요.';
+  }
+  if(code === 'auth/user-not-found'){ return '등록되지 않은 계정이에요.'; }
+  if(code === 'auth/invalid-email'){ return '이메일 형식을 확인해 주세요.'; }
+  if(code === 'auth/user-disabled'){ return '사용이 중지된 계정이에요.'; }
+  if(code === 'auth/too-many-requests'){ return '시도가 너무 많아요. 잠시 뒤에 다시 해 보세요.'; }
+  if(code === 'auth/network-request-failed'){ return '네트워크 연결을 확인해 주세요.'; }
+  return '로그인하지 못했어요. 다시 시도해 주세요.';
+}
+
+async function doLogout(){
+  try{ Object.keys(streams).forEach(p => unstream(p)); }catch(e){}
+  dbDenied = false;
+  idToken = null;
+  try{ await fbAuth.signOut(); }catch(e){ console.warn(e); }
+  location.reload();   // 화면·스트림을 완전히 비우고 잠금 화면부터 다시 시작
+}
+
+function wireAuthUI(){
+  const googleBtn = $('#googleBtn');
+  const msg = (t)=>{ $('#lockMsg').textContent = t; };
+
+  googleBtn.addEventListener('click', async ()=>{
+    if(googleBtn.disabled) return;
+    googleBtn.disabled = true;
+    msg('로그인 창을 여는 중이에요…');
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    try{
+      await fbAuth.signInWithPopup(provider);
+      msg('');
+    }catch(err){
+      const code = (err && err.code) || '';
+      msg('');
+      if(code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request'){
+        msg('로그인이 취소됐어요.');
+      } else if(code === 'auth/popup-blocked' || code === 'auth/operation-not-supported-in-this-environment' || code === 'auth/web-storage-unsupported'){
+        // 모바일·인앱 브라우저: 팝업이 막히면 페이지 이동 방식으로
+        try{ await fbAuth.signInWithRedirect(provider); return; }
+        catch(e2){ msg('이 브라우저에서는 로그인 창을 열 수 없어요. Chrome·Safari에서 다시 열어 주세요.'); }
+      } else if(code === 'auth/unauthorized-domain'){
+        msg('이 주소는 로그인이 허용되지 않았어요(도메인 승인 필요).');
+      } else if(code === 'auth/network-request-failed'){
+        msg('네트워크 연결을 확인해 주세요.');
+      } else {
+        msg('로그인하지 못했어요. 다시 시도해 주세요.');
+        console.warn(err);
+      }
+    }finally{
+      googleBtn.disabled = false;
+    }
+  });
+
+  // 팝업 대신 페이지 이동으로 돌아온 경우의 결과 처리
+  fbAuth.getRedirectResult().catch(err=>{
+    const code = (err && err.code) || '';
+    if(code && code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request'){
+      showSignIn(emailErrorText(err));
+    }
+  });
+
+  $('#emailToggle').addEventListener('click', ()=>{
+    const form = $('#emailForm');
+    const open = form.hidden;
+    form.hidden = !open;
+    $('#emailToggle').setAttribute('aria-expanded', String(open));
+    $('#emailCaret').textContent = open ? '▴' : '▾';
+    if(open) $('#loginEmail').focus();
+  });
+
+  $('#emailForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const btn = $('#emailSubmit');
+    const email = $('#loginEmail').value.trim();
+    const pw = $('#loginPw').value;
+    if(!email || !pw){ msg('이메일과 비밀번호를 입력해 주세요.'); return; }
+    btn.disabled = true;
+    msg('로그인 중이에요…');
+    try{
+      await fbAuth.signInWithEmailAndPassword(email, pw);
+      $('#loginPw').value = '';
+      msg('');
+    }catch(err){
+      msg(emailErrorText(err));
+      console.warn(err);
+    }finally{
+      btn.disabled = false;
+    }
+  });
+
+  $('#logoutBtn').addEventListener('click', doLogout);
+  $('#denyLogout').addEventListener('click', doLogout);
+}
+
+/* 로그인 상태 변화 — 토큰이 생기면 앱을 열고, 갱신되면 스트림을 다시 연결 */
+let started = false;
+let tokenInUse = null;
+
+function startApp(){
+  started = true;
+  dbDenied = false;
+  document.body.classList.remove('locked');
+  clearChecking();
+  boot();
+}
+
+function restartStreams(){
+  Object.keys(streams).forEach(p => unstream(p));
+  roomStreamPath = null;
+  streamRoom();
+  stream('tasks', ()=> loadTasks());
+  stream('agents', ()=> loadAgents());
+  stream('memos', ()=> loadMemos());
+  loadMessages(); loadTasks(); loadAgents(); loadMemos();
+}
+
+function wireAuthState(){
+  fbAuth.onIdTokenChanged(async user=>{
+    if(!user){
+      clearChecking();
+      idToken = null;
+      tokenInUse = null;
+      if(!dbDenied) showSignIn();
+      return;
+    }
+    let fresh = null;
+    try{ fresh = await user.getIdToken(); }
+    catch(e){ console.warn(e); }
+    clearChecking();
+    if(!fresh){
+      showSignIn('로그인 정보를 확인하지 못했어요. 다시 시도해 주세요.');
+      return;
+    }
+    const changed = fresh !== tokenInUse;
+    idToken = fresh;
+    if(!started){
+      tokenInUse = fresh;
+      startApp();
+    } else if(changed){
+      tokenInUse = fresh;
+      if(!dbDenied) restartStreams();
+    }
+  });
+}
+
+/* ---------------- 시작 ---------------- */
+try{
+  wireAuthUI();
+  wireAuthState();
+}catch(err){
+  console.error(err);
+  document.body.classList.remove('checking');
+  const el = document.getElementById('lockMsg');
+  if(el) el.textContent = '로그인 모듈을 불러오지 못했어요. 새로고침해 주세요.';
+}
+setTimeout(()=>{
+  if(document.body.classList.contains('checking')){
+    document.body.classList.remove('checking');
+    const el = document.getElementById('lockMsg');
+    if(el && !el.textContent) el.textContent = '로그인 상태를 확인하지 못했어요. 새로고침해 주세요.';
+  }
+}, 9000);
 </script>
 </body>
 </html>
