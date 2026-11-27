@@ -524,11 +524,15 @@
     .banner{padding:20px 22px 22px}
     .banner h2{font-size:24px}
     .banner p{font-size:13.5px}
-    .mapwrap{max-width:min(100%,78vh);margin-left:auto;margin-right:auto}
     .member-legend{grid-template-columns:repeat(3,1fr)}
     .legend-item:last-child{grid-column:auto}
     .lock-card{max-width:420px}
     .msg-body{max-width:70%}
+  }
+  /* 아주 넓은 화면(PC)에서만 지도가 세로로 너무 커지지 않게 폭을 묶는다.
+     폴드·태블릿 세로 화면은 그대로 화면 폭을 꽉 채운다. */
+  @media (min-width:1000px){
+    .mapwrap{max-width:min(100%,78vh);margin-left:auto;margin-right:auto}
   }
   @media (min-width:1100px){
     .member-legend{grid-template-columns:repeat(5,1fr)}
