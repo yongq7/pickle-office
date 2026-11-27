@@ -109,7 +109,7 @@
 
   /* ================= panels ================= */
   main{flex:1;min-height:0;display:flex;flex-direction:column}
-  .panel{display:none;flex:1;min-height:0;overflow-y:auto;padding:14px 14px 22px;-webkit-overflow-scrolling:touch}
+  .panel{display:none;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 14px 22px;-webkit-overflow-scrolling:touch}
   .panel.active{display:flex;flex-direction:column}
   #panel-room{padding:0;overflow:hidden}
 
@@ -457,6 +457,15 @@
     .brand h1{font-size:22px}
     .panel{padding:16px 18px 24px}
     .msg-body{max-width:74%}
+  }
+  /* 좁은 폰 화면: 지도 위 이름표가 겹치지 않게 조금씩 줄인다 */
+  @media (max-width:420px){
+    .pin{padding:6px 9px;font-size:11px;gap:3px}
+    .who{padding:3px 6px;font-size:9.5px;gap:3px}
+    .who .dot{width:4px;height:4px}
+    .banner h2{font-size:19px}
+    .banner{padding:14px}
+    .tab{font-size:12px;padding:8px 10px}
   }
 </style>
 </head>
