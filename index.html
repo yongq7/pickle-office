@@ -527,6 +527,17 @@
   .prize-filters .addbtn{margin-left:auto;background:#FFF1DE;border-color:#E4C79B;color:#8A5218}
   .prize-form{margin-top:10px}
   .prize-form[hidden]{display:none}
+  .prize-sum-note{margin:7px 2px 0;font-size:11px;font-weight:700;color:#A2917C;letter-spacing:-.15px}
+
+  .prize-sec{
+    display:flex;align-items:center;gap:7px;margin:14px 2px 8px;
+    font-size:12.4px;font-weight:800;color:#5A3A22;letter-spacing:-.25px;
+  }
+  .prize-sec:first-child{margin-top:0}
+  .prize-sec .n{
+    font-size:10.5px;font-weight:700;color:#A2917C;background:#F7EEDD;
+    border:1px solid var(--line);border-radius:999px;padding:2px 8px;
+  }
 
   .prize{
     position:relative;overflow:hidden;
@@ -540,6 +551,8 @@
   .prize + .prize{margin-top:9px}
   .prize.used{background:#FCFBF7}
   .prize.used::before{background:#CFE7DA}
+  .prize.coupang::before{background:linear-gradient(180deg,#A9CDEF,#5F93C8)}
+  .prize.coupang.used::before{background:#CFE0EE}
   .prize-top{display:flex;align-items:flex-start;gap:9px}
   .prize-check{
     flex:none;width:24px;height:24px;margin-top:1px;border-radius:8px;cursor:pointer;
@@ -905,18 +918,28 @@
 
       <div class="prize-sum">
         <div class="ps-item"><div class="ps-num" id="psTotal">0</div><div class="ps-label">전체</div></div>
-        <div class="ps-item pending"><div class="ps-num" id="psPending">0</div><div class="ps-label">미사용</div></div>
-        <div class="ps-item done"><div class="ps-num" id="psDone">0</div><div class="ps-label">사용완료</div></div>
+        <div class="ps-item pending"><div class="ps-num" id="psPending">0</div><div class="ps-label">미사용·미완료</div></div>
+        <div class="ps-item done"><div class="ps-num" id="psDone">0</div><div class="ps-label">완료</div></div>
       </div>
+      <div class="prize-sum-note" id="prizeSumNote"></div>
 
       <div class="prize-filters" id="prizeFilters">
         <button class="mini on" data-filter="all">전체</button>
-        <button class="mini" data-filter="pending">미사용</button>
-        <button class="mini" data-filter="done">사용완료</button>
+        <button class="mini" data-filter="coupang">🛒 쿠팡체험단</button>
+        <button class="mini" data-filter="event">🎁 일반 당첨</button>
+        <button class="mini" data-filter="pending">미사용·미완료</button>
+        <button class="mini" data-filter="done">완료</button>
         <button class="mini addbtn" id="prizeAddToggle" type="button">＋ 당첨 추가</button>
       </div>
 
       <div class="card prize-form" id="prizeForm" hidden>
+        <div class="field">
+          <label class="f-label">분류</label>
+          <div class="mini-chips" id="prizeCatChips">
+            <button class="mini on" type="button" data-cat="event">🎁 일반 당첨·체험단</button>
+            <button class="mini" type="button" data-cat="coupang">🛒 쿠팡체험단</button>
+          </div>
+        </div>
         <div class="field">
           <label class="f-label" for="prizeTitle">당첨 품목</label>
           <input type="text" id="prizeTitle" placeholder="예: 컬쳐랜드상품권 10,000원">
@@ -1068,8 +1091,9 @@ const state = {
   tasks: {},
   agents: {},
   memos: {},
-  prizes: {},          // id -> { id, title, source, wonAt, due, coupon, used, usedAt, ts }
-  prizeFilter: 'all',  // all | pending | done
+  prizes: {},          // id -> { id, title, category(coupang|event), source, wonAt, due, coupon, used, usedAt, ts }
+  prizeFilter: 'all',  // all | coupang | event | pending | done
+  prizeCat: 'event',   // 추가할 때 기본 분류
   taskOwner: 'manneungi',
   taskPrio: 'normal',
   online: false
@@ -1437,7 +1461,13 @@ async function addMemo(){
 }
 
 /* ---------------- 당첨함 ---------------- */
-const PRIZE_FILTER_LABEL = { all:'전체', pending:'미사용', done:'사용완료' };
+const PRIZE_FILTER_LABEL = { all:'전체', coupang:'쿠팡체험단', event:'일반 당첨', pending:'미사용·미완료', done:'완료' };
+/* 분류별 이름 — 쿠팡체험단은 '리뷰' 관리, 일반 경품은 '사용' 관리 */
+const PRIZE_CATS = {
+  coupang: { title:'🛒 쿠팡체험단 (리뷰 관리)', wait:'리뷰대기', done:'리뷰완료' },
+  event:   { title:'🎁 일반 당첨·경품',        wait:'미사용',   done:'사용완료' }
+};
+function prizeCat(p){ return (p && p.category === 'coupang') ? 'coupang' : 'event'; }
 
 function todayStr(){
   const d = new Date(), p = n => String(n).padStart(2,'0');
@@ -1473,59 +1503,73 @@ function renderPrizes(){
   const all = Object.values(state.prizes || {}).filter(p => p && p.title);
   const pending = all.filter(p => !p.used).length;
   const done = all.length - pending;
+  const cg = all.filter(p => prizeCat(p) === 'coupang').length;
 
   $('#prizeCount').textContent = all.length + '건';
   $('#psTotal').textContent = all.length;
   $('#psPending').textContent = pending;
   $('#psDone').textContent = done;
+  $('#prizeSumNote').textContent = `🛒 쿠팡체험단 ${cg}건 · 🎁 일반 ${all.length - cg}건`;
   const badge = $('#prizeTabBadge');
   if(badge){ badge.textContent = pending; badge.hidden = pending === 0; }
-  $$('#prizeFilters [data-filter]').forEach(b => {
-    b.classList.toggle('on', b.dataset.filter === state.prizeFilter);
-  });
 
-  // 미사용이 위, 같은 그룹은 최신 당첨일 순
-  let list = all.slice().sort((a,b)=>{
-    const ua = a.used ? 1 : 0, ub = b.used ? 1 : 0;
-    if(ua !== ub) return ua - ub;
-    const wa = String(a.wonAt || ''), wb = String(b.wonAt || '');
-    if(wa !== wb) return wb.localeCompare(wa);
-    return (b.ts || 0) - (a.ts || 0);
+  const f = state.prizeFilter;
+  $$('#prizeFilters [data-filter]').forEach(b => b.classList.toggle('on', b.dataset.filter === f));
+
+  const cats = f === 'coupang' ? ['coupang'] : f === 'event' ? ['event'] : ['coupang','event'];
+  let html = '', shown = 0;
+  cats.forEach(cat => {
+    let items = all.filter(p => prizeCat(p) === cat);
+    if(f === 'pending') items = items.filter(p => !p.used);
+    if(f === 'done') items = items.filter(p => p.used);
+    // 미사용(리뷰대기)이 위로, 같은 그룹에서는 최신 당첨일 순
+    items.sort((a,b)=>{
+      const ua = a.used ? 1 : 0, ub = b.used ? 1 : 0;
+      if(ua !== ub) return ua - ub;
+      const wa = String(a.wonAt || ''), wb = String(b.wonAt || '');
+      if(wa !== wb) return wb.localeCompare(wa);
+      return (b.ts || 0) - (a.ts || 0);
+    });
+    if(!items.length) return;
+    shown += items.length;
+    html += `<div class="prize-sec">${PRIZE_CATS[cat].title}<span class="n">${items.length}</span></div>`
+          + items.map(p => prizeCard(p)).join('');
   });
-  if(state.prizeFilter === 'pending') list = list.filter(p => !p.used);
-  if(state.prizeFilter === 'done') list = list.filter(p => p.used);
 
   const box = $('#prizeList');
-  if(!list.length){
+  if(!shown){
     box.innerHTML = all.length
-      ? `<div class="empty">${PRIZE_FILTER_LABEL[state.prizeFilter] || ''} 내역이 없어요.</div>`
+      ? `<div class="empty">${PRIZE_FILTER_LABEL[f] || ''} 내역이 없어요.</div>`
       : '<div class="empty">아직 등록된 당첨 내역이 없어요.<br>＋ 당첨 추가를 눌러 하나씩 쌓아 두세요.</div>';
     return;
   }
+  box.innerHTML = html;
+}
 
-  box.innerHTML = list.map(p=>{
-    const used = !!p.used;
-    const coupon = String(p.coupon || '').trim();
-    const src = [p.source, p.wonAt ? p.wonAt + ' 당첨' : ''].filter(Boolean).join(' · ');
-    return `
-      <div class="prize ${used ? 'used' : ''}">
+function prizeCard(p){
+  const used = !!p.used;
+  const cat = prizeCat(p);
+  const labels = PRIZE_CATS[cat];
+  const coupon = String(p.coupon || '').trim();
+  const src = [p.source, p.wonAt ? p.wonAt + ' 당첨' : ''].filter(Boolean).join(' · ');
+  const toggleLabel = used ? labels.wait + '로 되돌리기' : labels.done + '로 표시';
+  return `
+      <div class="prize ${cat === 'coupang' ? 'coupang' : ''} ${used ? 'used' : ''}">
         <div class="prize-top">
           <button class="prize-check ${used ? 'on' : ''}" data-act="toggle" data-id="${esc(p.id)}"
-            title="${used ? '미사용으로 되돌리기' : '사용완료로 표시'}"
-            aria-label="${used ? '미사용으로 되돌리기' : '사용완료로 표시'}">✓</button>
+            title="${toggleLabel}" aria-label="${toggleLabel}">✓</button>
           <div class="prize-main">
             <div class="prize-title">${esc(p.title)}</div>
             ${src ? `<div class="prize-src">${esc(src)}</div>` : ''}
           </div>
           <button class="prize-badge ${used ? 'used' : ''}" data-act="toggle" data-id="${esc(p.id)}"
-            title="눌러서 상태 바꾸기">${used ? '사용완료' : '미사용'}</button>
+            title="눌러서 상태 바꾸기">${used ? labels.done : labels.wait}</button>
         </div>
         ${p.due ? `<div class="prize-meta">${prizeDueChip(p.due)}</div>` : ''}
         ${coupon ? `<div class="prize-coupon"><code>${esc(coupon)}</code>
           <button class="prize-copy" data-act="copy" data-id="${esc(p.id)}">복사</button></div>` : ''}
         <div class="prize-foot"><button class="prize-del" data-act="del" data-id="${esc(p.id)}">삭제</button></div>
       </div>`;
-  }).join('');
 }
 
 async function loadPrizes(){
@@ -1546,6 +1590,7 @@ async function addPrize(){
   try{
     await fbPost('prizes', {
       title: title,
+      category: state.prizeCat === 'coupang' ? 'coupang' : 'event',
       source: $('#prizeSource').value.trim(),
       wonAt: $('#prizeWonAt').value || todayStr(),
       due: $('#prizeDue').value.trim(),
@@ -1570,11 +1615,12 @@ async function togglePrize(id){
   const p = state.prizes[id];
   if(!p) return;
   const next = !p.used;
+  const labels = PRIZE_CATS[prizeCat(p)];
   try{
     await fbPatch('prizes/' + id, { used: next, usedAt: next ? Date.now() : null });
     delete sig['prizes'];
     await loadPrizes();
-    toast(next ? '사용완료로 표시했어요' : '미사용으로 되돌렸어요');
+    toast(next ? labels.done + '로 표시했어요' : labels.wait + '로 되돌렸어요');
   }catch(e){ toast('변경 실패 — 연결을 확인해 주세요'); }
 }
 
@@ -1780,6 +1826,13 @@ $('#prizeFilters').addEventListener('click', e=>{
   if(!b) return;
   state.prizeFilter = b.dataset.filter;
   renderPrizes();
+});
+
+$('#prizeCatChips').addEventListener('click', e=>{
+  const b = e.target.closest('[data-cat]');
+  if(!b) return;
+  state.prizeCat = b.dataset.cat;
+  $$('#prizeCatChips .mini').forEach(c => c.classList.toggle('on', c === b));
 });
 
 $('#prizeAddToggle').addEventListener('click', ()=>{
