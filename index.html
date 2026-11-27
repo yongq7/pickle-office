@@ -630,6 +630,15 @@ const state = {
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
+/* 같은 데이터로 다시 그리지 않기 위한 서명 — 폴링/SSE가 와도 실제로 바뀜 때만 렌더 */
+const sig = {};
+function dataChanged(key, data){
+  const s = JSON.stringify(data || {});
+  if(sig[key] === s) return false;
+  sig[key] = s;
+  return true;
+}
+
 function esc(s){
   return String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -775,7 +784,9 @@ function renderMessages(){
 async function loadMessages(){
   try{
     const data = await fbGet('messages/' + state.room);
-    state.messages[state.room] = data || {};
+    const norm = data || {};
+    if(!dataChanged('msg:' + state.room, norm)) return;
+    state.messages[state.room] = norm;
     renderMessages();
   }catch(e){
     console.warn(e);
@@ -802,6 +813,7 @@ async function sendMessage(){
     input.value = '';
     input.style.height = 'auto';
     state._justSent = true;
+    delete sig['msg:' + state.room];   // 내 메시지는 반드시 다시 그린다
     await loadMessages();
   }catch(e){
     toast('전송 실패 — 연결을 확인해 주세요');
@@ -853,6 +865,7 @@ function renderTasks(){
 async function loadTasks(){
   try{
     const data = await fbGet('tasks');
+    if(!dataChanged('tasks', data)) return;
     state.tasks = {};
     if(data) Object.keys(data).forEach(k => state.tasks[k] = Object.assign({id:k}, data[k]));
     renderTasks();
@@ -913,7 +926,11 @@ function renderAgents(){
 async function loadAgents(){
   try{
     const data = await fbGet('agents');
+    // 현황 칸을 고치는 중이면 다시 그리지 않아 입력이 끊기지 않게 한다
+    const active = document.activeElement;
+    const editing = !!(active && active.closest && active.closest('#agentList'));
     state.agents = data || {};
+    if(editing || !dataChanged('agents', data)) return;
     renderAgents();
   }catch(e){ console.warn(e); }
 }
@@ -943,6 +960,7 @@ function renderMemos(){
 async function loadMemos(){
   try{
     const data = await fbGet('memos');
+    if(!dataChanged('memos', data)) return;
     state.memos = {};
     if(data) Object.keys(data).forEach(k => state.memos[k] = Object.assign({id:k}, data[k]));
     renderMemos();
